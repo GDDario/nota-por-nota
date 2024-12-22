@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 void main() {
+  print("API_URL ${const String.fromEnvironment('API_URL')}");
   runApp(const MyApp());
 }
 
@@ -56,6 +57,12 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
+
+  @override
+  void initState() {
+    print("API_URL ${const String.fromEnvironment('API_URL')}");
+    super.initState();
+  }
 
   void _incrementCounter() {
     setState(() {
