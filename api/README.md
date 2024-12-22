@@ -2,7 +2,7 @@
 
 ## Instalação
 
-###### É esperado que você já tenha criado baixado o repositório na sua máquina
+###### É esperado que você já tenha baixado o repositório na sua máquina.
 
 1. Criar um banco de dados Postgres (preferencialmente na versão 17) com o nome "nota-por-nota";
 2. Copiar as variáveis de ambiente (`cp .env.example .env`);
