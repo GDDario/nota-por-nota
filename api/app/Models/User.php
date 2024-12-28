@@ -18,6 +18,8 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'uuid',
+        'username',
         'email',
         'password',
     ];
@@ -28,6 +30,7 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $hidden = [
+        'id',
         'password',
         'remember_token',
     ];
@@ -40,6 +43,9 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
+            'created_at' => 'datetime',
+            'updated_at' => 'datetime',
+            'deleted_at' => 'datetime',
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
