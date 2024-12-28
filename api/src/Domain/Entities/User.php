@@ -31,20 +31,12 @@ final class User
      */
     private function validate(): void
     {
-        if (empty($this->id)) {
-            throw new DomainException('User ID cannot be empty.');
-        }
-
         if (empty($this->name)) {
             throw new DomainException('User name cannot be empty.');
         }
 
         if (empty($this->username)) {
             throw new DomainException('The username is required.');
-        }
-
-        if ($this->createdAt > new DateTime()) {
-            throw new DomainException('The createdAt date cannot be in the future.');
         }
 
         if ($this->updatedAt !== null && $this->updatedAt < $this->createdAt) {
