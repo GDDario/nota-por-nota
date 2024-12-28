@@ -11,9 +11,9 @@ final class Email
     /**
      * @throws InvalidEmailException
      */
-    public function __construct($value)
+    public function __construct(string $value)
     {
-        $this->validate();
+        $this->validate($value);
         $this->value = $value;
     }
 
@@ -25,9 +25,9 @@ final class Email
     /**
      * @throws InvalidEmailException
      */
-    private function validate(): void
+    private function validate(string $value): void
     {
-        if (!filter_var($this->value, FILTER_VALIDATE_EMAIL)) {
+        if (!filter_var($value, FILTER_VALIDATE_EMAIL)) {
             throw new InvalidEmailException();
         }
     }

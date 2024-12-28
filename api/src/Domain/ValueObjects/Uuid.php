@@ -11,9 +11,9 @@ final class Uuid
     /**
      * @throws InvalidUuidException
      */
-    public function __construct($value)
+    public function __construct(string $value)
     {
-        $this->validate();
+        $this->validate($value);
         $this->value = $value;
     }
 
@@ -25,12 +25,12 @@ final class Uuid
     /**
      * @throws InvalidUuidException
      */
-    private function validate(): void
+    private function validate(string $value): void
     {
         if (!preg_match(
             '/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/',
-            $this->value)
-        ) {
+            $value
+        )) {
             throw new InvalidUuidException();
         }
     }
