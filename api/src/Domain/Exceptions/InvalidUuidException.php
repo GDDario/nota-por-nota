@@ -2,11 +2,9 @@
 
 namespace Src\Domain\Exceptions;
 
-use Exception;
-
-class InvalidValueObjectException extends Exception
+final class InvalidUuidException extends InvalidValueObjectException
 {
-    protected $message = 'Invalid value provided.';
+    protected $message = 'Invalid Uuid format.';
 
     public function __construct($message = null)
     {
