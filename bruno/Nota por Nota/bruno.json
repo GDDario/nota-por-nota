@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "Nota por Nota",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}
