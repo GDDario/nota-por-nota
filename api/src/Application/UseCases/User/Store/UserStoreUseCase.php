@@ -6,12 +6,14 @@ use InvalidArgumentException;
 use Ramsey\Uuid\Uuid as RamseyUuid;
 use Src\Application\DTOs\CreateUserDTO;
 use Src\Domain\Repositories\UserRepositoryInterface;
+use Src\Domain\Services\AuthenticationServiceInterface;
 use Src\Domain\ValueObjects\Uuid;
 
 final class UserStoreUseCase
 {
     public function __construct(
-        private UserRepositoryInterface $userRepository
+        private readonly UserRepositoryInterface        $userRepository,
+        private readonly AuthenticationServiceInterface $authenticationService
     )
     {
     }
@@ -30,14 +32,21 @@ final class UserStoreUseCase
             $input->password
         );
 
-        $data = $this->userRepository->create($dto);
+        $userData = $this->userRepository->create($dto);
+        $tokenData = $this->authenticationService->login([
+            'email' => $input->email,
+            'password' => $input->password
+        ]);
 
         return new UserStoreOutputBoundary(
-            $data->uuid,
-            $data->name,
-            $data->email,
-            $data->username,
-            $data->createdAt
+            uuid: $userData->uuid,
+            name: $userData->name,
+            email: $userData->email,
+            username: $userData->username,
+            createdAt: $userData->createdAt,
+            accessToken: $tokenData->accessToken,
+            refreshToken: $tokenData->refreshToken,
+            expiresAt: $tokenData->expiresAt
         );
     }
 }

@@ -2,6 +2,8 @@
 
 namespace Tests\Feature\Authentication;
 
+use function Pest\Laravel\assertDatabaseCount;
+
 const REGISTER_URI = '/api/user';
 
 it('should register successfully', function () {
@@ -25,6 +27,7 @@ it('should register successfully', function () {
         ]
     ]);
     $response->assertJsonStructure([
+        'message',
         'data' => [
             'uuid',
             'name',
@@ -32,5 +35,12 @@ it('should register successfully', function () {
             'username',
             'created_at'
         ],
+        'access_token',
+        'refresh_token',
+        'expires_at'
     ]);
+    assertDatabaseCount('personal_access_tokens', 1);
+    assertDatabaseCount('refresh_tokens', 1);
 });
+
+// it ('should not register successfully', function () {});

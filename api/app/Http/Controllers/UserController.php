@@ -9,6 +9,7 @@ use Illuminate\Http\Response;
 use Src\Application\UseCases\User\Store\UserStoreInputBoundary;
 use Src\Application\UseCases\User\Store\UserStoreUseCase;
 use Src\Domain\ValueObjects\Email;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class UserController extends Controller
 {
@@ -39,8 +40,11 @@ class UserController extends Controller
                 'email' => (string)$response->email,
                 'username' => $response->username,
                 'created_at' => $response->createdAt,
-            ]
-        ], Response::HTTP_CREATED);
+            ],
+            'access_token' => $response->accessToken,
+            'refresh_token' => $response->refreshToken,
+            'expires_at' => $response->expiresAt->format('Y-m-d\TH:i:s.u\Z')
+        ], SymfonyResponse::HTTP_CREATED);
     }
 
     public function show(User $user)

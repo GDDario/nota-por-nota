@@ -13,7 +13,10 @@ final class UserStoreOutputBoundary
         public string   $name,
         public Email    $email,
         public string   $username,
-        public DateTime $createdAt
+        public DateTime $createdAt,
+        public string   $accessToken,
+        public string   $refreshToken,
+        public DateTime $expiresAt
     )
     {
     }
