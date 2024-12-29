@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UserStoreRequest extends FormRequest
+class RegisterRequest extends FormRequest
 {
     /**
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>

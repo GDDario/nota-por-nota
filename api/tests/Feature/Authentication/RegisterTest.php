@@ -4,7 +4,7 @@ namespace Tests\Feature\Authentication;
 
 use function Pest\Laravel\assertDatabaseCount;
 
-const REGISTER_URI = '/api/user';
+const REGISTER_URI = '/api/register';
 
 it('should register successfully', function () {
     $requestData = [

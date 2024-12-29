@@ -1,6 +1,6 @@
 <?php
 
-namespace Src\Application\UseCases\User\Store;
+namespace Src\Application\UseCases\Authenticaction\Register;
 
 use InvalidArgumentException;
 use Ramsey\Uuid\Uuid as RamseyUuid;
@@ -9,7 +9,7 @@ use Src\Domain\Repositories\UserRepositoryInterface;
 use Src\Domain\Services\AuthenticationServiceInterface;
 use Src\Domain\ValueObjects\Uuid;
 
-final class UserStoreUseCase
+final class RegisterUseCase
 {
     public function __construct(
         private readonly UserRepositoryInterface        $userRepository,
