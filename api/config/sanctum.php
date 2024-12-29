@@ -46,7 +46,7 @@ return [
     |
     */
 
-    'expiration' => null,
+    'expiration' => env('SANCTUM_EXPIRATION_TIME', 60),
 
     /*
     |--------------------------------------------------------------------------
