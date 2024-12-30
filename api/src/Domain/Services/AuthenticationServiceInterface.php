@@ -2,9 +2,9 @@
 
 namespace Src\Domain\Services;
 
-use Src\Application\DTOs\LoginDataDTO;
+use Src\Application\DTOs\TokensDTO;
 
 interface AuthenticationServiceInterface
 {
-    public function login(array $credentials): LoginDataDTO;
+    public function login(array $credentials): TokensDTO;
 }

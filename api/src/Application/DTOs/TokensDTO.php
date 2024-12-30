@@ -4,7 +4,7 @@ namespace Src\Application\DTOs;
 
 use DateTime;
 
-final class LoginDataDTO
+final class TokensDTO
 {
     public function __construct(
         public string   $accessToken,

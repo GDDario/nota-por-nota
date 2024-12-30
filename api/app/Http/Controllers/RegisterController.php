@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\RegisterRequest;
 use Illuminate\Http\Response;
-use Src\Application\UseCases\Authenticaction\Register\RegisterInputBoundary;
-use Src\Application\UseCases\Authenticaction\Register\RegisterUseCase;
+use Src\Application\UseCases\Authentication\Register\RegisterInputBoundary;
+use Src\Application\UseCases\Authentication\Register\RegisterUseCase;
 use Src\Domain\ValueObjects\Email;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
@@ -35,9 +35,9 @@ class RegisterController
                 'username' => $response->username,
                 'created_at' => $response->createdAt,
             ],
-            'access_token' => $response->accessToken,
-            'refresh_token' => $response->refreshToken,
-            'expires_at' => $response->expiresAt->format('Y-m-d\TH:i:s.u\Z')
+            'access_token' => $response->tokenData->accessToken,
+            'refresh_token' => $response->tokenData->refreshToken,
+            'expires_at' => $response->tokenData->expiresAt->format('Y-m-d\TH:i:s.u\Z')
         ], SymfonyResponse::HTTP_CREATED);
     }
 }

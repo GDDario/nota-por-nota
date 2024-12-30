@@ -1,6 +1,6 @@
 <?php
 
-namespace Src\Application\UseCases\Authenticaction\Register;
+namespace Src\Application\UseCases\Authentication\Register;
 
 use InvalidArgumentException;
 use Ramsey\Uuid\Uuid as RamseyUuid;
@@ -44,9 +44,7 @@ final class RegisterUseCase
             email: $userData->email,
             username: $userData->username,
             createdAt: $userData->createdAt,
-            accessToken: $tokenData->accessToken,
-            refreshToken: $tokenData->refreshToken,
-            expiresAt: $tokenData->expiresAt
+            tokenData: $tokenData
         );
     }
 }

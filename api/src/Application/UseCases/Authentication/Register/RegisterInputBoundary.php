@@ -1,10 +1,10 @@
 <?php
 
-namespace Src\Application\UseCases\User\Store;
+namespace Src\Application\UseCases\Authentication\Register;
 
 use Src\Domain\ValueObjects\Email;
 
-final class UserStoreInputBoundary
+final class RegisterInputBoundary
 {
     public function __construct(
         public string $name,

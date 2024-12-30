@@ -3,7 +3,7 @@
 namespace Src\InterfaceAdapters\Services;
 
 use Illuminate\Support\Facades\Auth;
-use Src\Application\DTOs\LoginDataDTO;
+use Src\Application\DTOs\TokensDTO;
 use Src\Domain\Exceptions\AuthenticationException;
 use Src\Domain\Services\AuthenticationServiceInterface;
 
@@ -12,12 +12,11 @@ final class SanctumAuthenticationAdapter implements AuthenticationServiceInterfa
     /**
      * @throws AuthenticationException
      */
-    public function login(array $credentials): LoginDataDTO
+    public function login(array $credentials): TokensDTO
     {
         if (!Auth::attempt($credentials)) {
             throw new AuthenticationException();
         }
-
 
         $user = Auth::user();
         $expirationDate = now()->addMinutes((int)env('SANCTUM_EXPIRATION_TIME', 60));
@@ -37,7 +36,7 @@ final class SanctumAuthenticationAdapter implements AuthenticationServiceInterfa
             'created_at' => now()
         ]);
 
-        return new LoginDataDTO(
+        return new TokensDTO(
             accessToken: $accessToken,
             refreshToken: $refreshToken,
             expiresAt: $expirationDate->toDateTime()
