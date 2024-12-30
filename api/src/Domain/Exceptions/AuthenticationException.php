@@ -6,7 +6,7 @@ use Exception;
 
 class AuthenticationException extends Exception
 {
-    protected $message = 'Authentication failed';
+    protected $message = 'Invalid credentials provided.';
 
     public function __construct($message = null)
     {

@@ -2,10 +2,10 @@
 
 namespace Src\Infrastructure\Repositories;
 
+use App\Models\User as UserModel;
 use Src\Application\DTOs\CreateUserDTO;
 use Src\Domain\Entities\User;
 use Src\Domain\Repositories\UserRepositoryInterface;
-use \App\Models\User as UserModel;
 use Src\Domain\ValueObjects\Email;
 use Src\Domain\ValueObjects\Uuid;
 
@@ -16,6 +16,15 @@ final class UserEloquentRepository implements UserRepositoryInterface
     public function __construct()
     {
         $this->eloquentModel = new UserModel();
+    }
+
+    public function findByEmail(Email $email): ?User
+    {
+        $query = $this->eloquentModel->query();
+
+        $model = $query->where('email', $email)->first();
+
+        return $this->hydrateEntity($model);
     }
 
     public function create(CreateUserDTO $dto): User
@@ -33,8 +42,12 @@ final class UserEloquentRepository implements UserRepositoryInterface
         return $this->hydrateEntity($model);
     }
 
-    private function hydrateEntity(UserModel $model): User
+    private function hydrateEntity(?UserModel $model): ?User
     {
+        if ($model === null) {
+            return null;
+        }
+
         return new User(
             $model->id,
             new Uuid($model->uuid),

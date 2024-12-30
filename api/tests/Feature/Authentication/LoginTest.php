@@ -2,39 +2,41 @@
 
 namespace Tests\Feature\Authentication;
 
+use App\Models\User;
 use function Pest\Laravel\assertDatabaseCount;
+use function Pest\Laravel\be;
 
-const REGISTER_URI = '/api/register';
+const LOGIN_URI = '/api/login';
 
-describe('Register', function () {
-    it('should register successfully', function () {
+beforeEach(function () {
+    User::factory()->create([
+        'email' => 'john@doe.com'
+    ]);
+});
+
+describe('Login', function () {
+    it('should login successfully', function () {
         $requestData = [
-            'name' => 'John Doe',
             'email' => 'john@doe.com',
-            'username' => 'jhondoe456',
-            'password' => 'password',
-            'password_confirmation' => 'password'
+            'password' => 'password'
         ];
 
-        $response = $this->post(REGISTER_URI, $requestData);
+        $response = $this->post(LOGIN_URI, $requestData);
 
-        $response->assertStatus(201);
+        $response->assertStatus(200);
         $response->assertJson([
-            'message' => 'User created successfully.',
             'data' => [
-                'name' => 'John Doe',
                 'email' => 'john@doe.com',
-                'username' => 'jhondoe456'
-            ]
+            ],
         ]);
         $response->assertJsonStructure([
-            'message',
             'data' => [
                 'uuid',
                 'name',
                 'email',
                 'username',
-                'created_at'
+                'created_at',
+                'updated_at'
             ],
             'access_token',
             'refresh_token',
@@ -43,6 +45,4 @@ describe('Register', function () {
         assertDatabaseCount('personal_access_tokens', 1);
         assertDatabaseCount('refresh_tokens', 1);
     });
-
-// it ('should not register successfully', function () {});
 });
