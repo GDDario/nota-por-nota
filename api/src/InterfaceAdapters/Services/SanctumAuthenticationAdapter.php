@@ -23,7 +23,7 @@ final class SanctumAuthenticationAdapter implements AuthenticationServiceInterfa
         $user = Auth::user();
         $expirationDate = now()->addMinutes((int)env('SANCTUM_EXPIRATION_TIME', 60));
 
-        $token = $user->createToken('auth_token');
+        $token = $user->createToken('access_token');
         $accessToken = $token->plainTextToken;
 
         $token->accessToken->forceFill([
@@ -49,5 +49,7 @@ final class SanctumAuthenticationAdapter implements AuthenticationServiceInterfa
     {
         $user = Auth::user();
         $user->currentAccessToken()->delete();
+        $user->refreshTokens()->delete();
+
     }
 }
