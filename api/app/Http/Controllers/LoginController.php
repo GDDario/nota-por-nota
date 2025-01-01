@@ -8,7 +8,6 @@ use Src\Application\UseCases\Authenticaction\Register\RegisterInputBoundary;
 use Src\Application\UseCases\Authenticaction\Register\RegisterUseCase;
 use Src\Application\UseCases\Authentication\Login\LoginInputBoundary;
 use Src\Application\UseCases\Authentication\Login\LoginUseCase;
-use Src\Domain\Exceptions\AuthenticationException;
 use Src\Domain\ValueObjects\Email;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
@@ -19,16 +18,12 @@ class LoginController
         LoginUseCase $useCase
     ): Response
     {
-        try {
-            $response = $useCase->handle(
-                new LoginInputBoundary(
-                    email: new Email($request->input('email')),
-                    password: $request->input('password'),
-                )
-            );
-        } catch (AuthenticationException $e) {
-            return new Response($e->getMessage(), Response::HTTP_UNAUTHORIZED);
-        }
+        $response = $useCase->handle(
+            new LoginInputBoundary(
+                email: new Email($request->input('email')),
+                password: $request->input('password'),
+            )
+        );
 
         return new Response([
             'message' => 'Successfully logged in.',
