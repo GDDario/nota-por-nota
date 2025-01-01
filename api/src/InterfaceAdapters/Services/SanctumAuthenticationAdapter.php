@@ -5,8 +5,11 @@ namespace Src\InterfaceAdapters\Services;
 use Illuminate\Support\Facades\Auth;
 use Random\RandomException;
 use Src\Application\DTOs\TokensDTO;
+use Src\Domain\Entities\User;
 use Src\Domain\Exceptions\AuthenticationException;
 use Src\Domain\Services\AuthenticationServiceInterface;
+use Src\Domain\ValueObjects\Email;
+use Src\Domain\ValueObjects\Uuid;
 
 final class SanctumAuthenticationAdapter implements AuthenticationServiceInterface
 {
@@ -50,6 +53,20 @@ final class SanctumAuthenticationAdapter implements AuthenticationServiceInterfa
         $user = Auth::user();
         $user->currentAccessToken()->delete();
         $user->refreshTokens()->delete();
+    }
 
+    public function getAuthenticatedUser(): User
+    {
+        $user = Auth::user();
+
+        return new User(
+            id: $user['id'],
+            uuid: new Uuid($user['uuid']),
+            name: $user['name'],
+            email: new Email($user['email']),
+            username: $user['username'],
+            createdAt: $user['created_at'],
+            updatedAt: $user['updated_at']
+        );
     }
 }
