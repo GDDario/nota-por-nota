@@ -3,6 +3,7 @@
 namespace Src\InterfaceAdapters\Services;
 
 use Illuminate\Support\Facades\Auth;
+use Random\RandomException;
 use Src\Application\DTOs\TokensDTO;
 use Src\Domain\Exceptions\AuthenticationException;
 use Src\Domain\Services\AuthenticationServiceInterface;
@@ -11,6 +12,7 @@ final class SanctumAuthenticationAdapter implements AuthenticationServiceInterfa
 {
     /**
      * @throws AuthenticationException
+     * @throws RandomException
      */
     public function login(array $credentials): TokensDTO
     {
@@ -41,5 +43,11 @@ final class SanctumAuthenticationAdapter implements AuthenticationServiceInterfa
             refreshToken: $refreshToken,
             expiresAt: $expirationDate->toDateTime()
         );
+    }
+
+    public function logout(): void
+    {
+        $user = Auth::user();
+        $user->currentAccessToken()->delete();
     }
 }
