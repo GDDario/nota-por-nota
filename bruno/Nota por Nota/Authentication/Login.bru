@@ -13,10 +13,10 @@ post {
 body:json {
   {
     "email": "jhon@doe.com",
-    "password": "password"
+    "password": "pas3sword"
   }
 }
 
 script:post-response {
-  bru.setEnvVar('access_token', res.body.data.access_token);
+  bru.setEnvVar('access_token', res.body.data?.access_token);
 }

@@ -4,6 +4,8 @@ namespace Tests\Feature\Authentication;
 
 use App\Models\User;
 use function Pest\Laravel\assertDatabaseCount;
+use function Pest\Laravel\assertDatabaseEmpty;
+use function Pest\Laravel\postJson;
 
 const LOGIN_URI = '/api/login';
 
@@ -47,5 +49,26 @@ describe('Login', function () {
         ]);
         assertDatabaseCount('personal_access_tokens', 1);
         assertDatabaseCount('refresh_tokens', 1);
+    });
+
+    it('should not login successfully with invalid email', function () {
+        $requestData = [
+            'email' => 'not@johndoe.com',
+            'password' => 'password'
+        ];
+
+        $response = postJson(LOGIN_URI, $requestData);
+
+        $response->assertStatus(422);
+        $response->assertJson([
+            'message' => 'The selected email is invalid.',
+            'errors' => [
+                'email' => [
+                    'The selected email is invalid.'
+                ]
+            ]
+        ]);
+        assertDatabaseEmpty('personal_access_tokens');
+        assertDatabaseEmpty('refresh_tokens');
     });
 });
