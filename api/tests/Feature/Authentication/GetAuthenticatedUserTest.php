@@ -3,6 +3,9 @@
 namespace Tests\Feature\Authentication;
 
 use App\Models\User;
+use function Pest\Laravel\assertDatabaseEmpty;
+use function Pest\Laravel\getJson;
+use function Pest\Laravel\postJson;
 
 const GET_AUTHENTICATED_USER_URI = '/api/auth_user';
 
@@ -36,5 +39,16 @@ describe('Get authenticated user', function () {
                 'updated_at'
             ]
         ]);
+    });
+
+    it('should not bring the authenticated user information if the user is not authenticated', function () {
+        User::factory()->create([
+            'email' => 'john@doe.com'
+        ]);
+
+        $response = getJson(GET_AUTHENTICATED_USER_URI);
+
+        $response->assertStatus(401);
+        $response->assertJson(['message' => 'Unauthenticated.']);
     });
 });
