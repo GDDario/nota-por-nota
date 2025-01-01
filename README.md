@@ -23,8 +23,8 @@ Dart v3.5
 PHP v3.3.9
 
 ## Acadêmicos
-Arthur Vinicius da Silva Bertossi; 
+- [Arthur Vinicius da Silva Bertossi](https://github.com/arthurbertossi);
+- [Gabriel Donizetti Dário](https://github.com/GDDario);
 
-Gabriel Donizetti Dário.
-## Professores 
+## Professor/orientador
 Juliana L S Cruz.
