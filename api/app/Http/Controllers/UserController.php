@@ -7,13 +7,9 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    public function index()
-    {
-    }
+    public function index() {}
 
-    public function store()
-    {
-    }
+    public function store() {}
 
     public function show(User $user)
     {
@@ -21,11 +17,7 @@ class UserController extends Controller
         ds($user);
     }
 
-    public function update(Request $request, User $user)
-    {
-    }
+    public function update(Request $request, User $user) {}
 
-    public function destroy(User $user)
-    {
-    }
+    public function destroy(User $user) {}
 }

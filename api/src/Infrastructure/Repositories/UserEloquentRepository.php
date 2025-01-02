@@ -15,7 +15,7 @@ final class UserEloquentRepository implements UserRepositoryInterface
 
     public function __construct()
     {
-        $this->eloquentModel = new UserModel();
+        $this->eloquentModel = new UserModel;
     }
 
     public function findByEmail(Email $email): ?User

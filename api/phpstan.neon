@@ -8,3 +8,5 @@ parameters:
 
     level: 5
 
+    ignoreErrors:
+        - '#Undefined variable: \$this#'
