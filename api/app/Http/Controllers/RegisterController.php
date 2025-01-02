@@ -14,8 +14,7 @@ class RegisterController
     public function __invoke(
         RegisterRequest $request,
         RegisterUseCase $useCase
-    ): Response
-    {
+    ): Response {
         $response = $useCase->handle(
             new RegisterInputBoundary(
                 $request->input('name'),
@@ -29,15 +28,15 @@ class RegisterController
         return new Response([
             'message' => 'User created successfully.',
             'data' => [
-                'uuid' => (string)$response->uuid,
+                'uuid' => (string) $response->uuid,
                 'name' => $response->name,
-                'email' => (string)$response->email,
+                'email' => (string) $response->email,
                 'username' => $response->username,
                 'created_at' => $response->createdAt,
             ],
             'access_token' => $response->tokenData->accessToken,
             'refresh_token' => $response->tokenData->refreshToken,
-            'expires_at' => $response->tokenData->expiresAt->format('Y-m-d\TH:i:s.u\Z')
+            'expires_at' => $response->tokenData->expiresAt->format('Y-m-d\TH:i:s.u\Z'),
         ], SymfonyResponse::HTTP_CREATED);
     }
 }

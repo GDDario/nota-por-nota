@@ -19,12 +19,12 @@ final class SanctumAuthenticationAdapter implements AuthenticationServiceInterfa
      */
     public function login(array $credentials): TokensDTO
     {
-        if (!Auth::attempt($credentials)) {
-            throw new AuthenticationException();
+        if (! Auth::attempt($credentials)) {
+            throw new AuthenticationException;
         }
 
         $user = Auth::user();
-        $expirationDate = now()->addMinutes((int)env('SANCTUM_EXPIRATION_TIME', 60));
+        $expirationDate = now()->addMinutes((int) env('SANCTUM_EXPIRATION_TIME', 60));
 
         $token = $user->createToken('access_token');
         $accessToken = $token->plainTextToken;
@@ -38,7 +38,7 @@ final class SanctumAuthenticationAdapter implements AuthenticationServiceInterfa
         $user->refreshTokens()->create([
             'token' => hash('sha256', $refreshToken),
             'expires_at' => $expirationDate,
-            'created_at' => now()
+            'created_at' => now(),
         ]);
 
         return new TokensDTO(

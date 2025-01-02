@@ -12,11 +12,11 @@ class RefreshToken extends Model
         'token',
         'expires_at',
         'user_id',
-        'created_at'
+        'created_at',
     ];
 
     protected $hidden = [
-        'id'
+        'id',
     ];
 
     protected $casts = [

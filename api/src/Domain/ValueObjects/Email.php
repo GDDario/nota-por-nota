@@ -27,8 +27,8 @@ final class Email
      */
     private function validate(string $value): void
     {
-        if (!filter_var($value, FILTER_VALIDATE_EMAIL)) {
-            throw new InvalidEmailException();
+        if (! filter_var($value, FILTER_VALIDATE_EMAIL)) {
+            throw new InvalidEmailException;
         }
     }
 }

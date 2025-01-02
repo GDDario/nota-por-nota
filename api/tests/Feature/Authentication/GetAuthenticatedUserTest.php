@@ -3,9 +3,8 @@
 namespace Tests\Feature\Authentication;
 
 use App\Models\User;
-use function Pest\Laravel\assertDatabaseEmpty;
+
 use function Pest\Laravel\getJson;
-use function Pest\Laravel\postJson;
 
 const GET_AUTHENTICATED_USER_URI = '/api/auth_user';
 
@@ -15,7 +14,7 @@ describe('Get authenticated user', function () {
             'uuid' => '5a9ce7ef-2691-481e-9cd1-7e6205437c1e',
             'name' => 'John Doe',
             'email' => 'john@doe.com',
-            'username' => 'jhondoe456'
+            'username' => 'jhondoe456',
         ]);
 
         $response = $this->actingAs($user)->get(GET_AUTHENTICATED_USER_URI);
@@ -26,7 +25,7 @@ describe('Get authenticated user', function () {
                 'uuid' => '5a9ce7ef-2691-481e-9cd1-7e6205437c1e',
                 'name' => 'John Doe',
                 'email' => 'john@doe.com',
-                'username' => 'jhondoe456'
+                'username' => 'jhondoe456',
             ],
         ]);
         $response->assertJsonStructure([
@@ -36,14 +35,14 @@ describe('Get authenticated user', function () {
                 'email',
                 'username',
                 'created_at',
-                'updated_at'
-            ]
+                'updated_at',
+            ],
         ]);
     });
 
     it('should not bring the authenticated user information if the user is not authenticated', function () {
         User::factory()->create([
-            'email' => 'john@doe.com'
+            'email' => 'john@doe.com',
         ]);
 
         $response = getJson(GET_AUTHENTICATED_USER_URI);

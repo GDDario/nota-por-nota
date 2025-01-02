@@ -9,12 +9,9 @@ use Src\Domain\Services\AuthenticationServiceInterface;
 final class LoginUseCase
 {
     public function __construct(
-        private readonly UserRepositoryInterface        $userRepository,
+        private readonly UserRepositoryInterface $userRepository,
         private readonly AuthenticationServiceInterface $authenticationService
-    )
-    {
-
-    }
+    ) {}
 
     /**
      * @throws AuthenticationException
@@ -23,7 +20,7 @@ final class LoginUseCase
     {
         $tokenData = $this->authenticationService->login([
             'email' => $input->email,
-            'password' => $input->password
+            'password' => $input->password,
         ]);
 
         $user = $this->userRepository->findByEmail($input->email);

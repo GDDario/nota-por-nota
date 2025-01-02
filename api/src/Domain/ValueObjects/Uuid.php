@@ -27,11 +27,11 @@ final class Uuid
      */
     private function validate(string $value): void
     {
-        if (!preg_match(
+        if (! preg_match(
             '/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/',
             $value
         )) {
-            throw new InvalidUuidException();
+            throw new InvalidUuidException;
         }
     }
 }

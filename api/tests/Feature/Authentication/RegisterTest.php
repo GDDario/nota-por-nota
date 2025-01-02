@@ -13,7 +13,7 @@ describe('Register', function () {
             'email' => 'john@doe.com',
             'username' => 'jhondoe456',
             'password' => 'password',
-            'password_confirmation' => 'password'
+            'password_confirmation' => 'password',
         ];
 
         $response = $this->post(REGISTER_URI, $requestData);
@@ -24,8 +24,8 @@ describe('Register', function () {
             'data' => [
                 'name' => 'John Doe',
                 'email' => 'john@doe.com',
-                'username' => 'jhondoe456'
-            ]
+                'username' => 'jhondoe456',
+            ],
         ]);
         $response->assertJsonStructure([
             'message',
@@ -34,15 +34,15 @@ describe('Register', function () {
                 'name',
                 'email',
                 'username',
-                'created_at'
+                'created_at',
             ],
             'access_token',
             'refresh_token',
-            'expires_at'
+            'expires_at',
         ]);
         assertDatabaseCount('personal_access_tokens', 1);
         assertDatabaseCount('refresh_tokens', 1);
     });
 
-// it ('should not register successfully', function () {});
+    // it ('should not register successfully', function () {});
 });

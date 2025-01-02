@@ -13,13 +13,13 @@ class AuthenticatedUserController extends Controller
 
         return new Response([
             'data' => [
-                'uuid' => (string)$response->uuid,
+                'uuid' => (string) $response->uuid,
                 'name' => $response->name,
-                'email' => (string)$response->email,
+                'email' => (string) $response->email,
                 'username' => $response->username,
                 'created_at' => $response->createdAt,
-                'updated_at' => $response->updatedAt
-            ]
+                'updated_at' => $response->updatedAt,
+            ],
         ], 200);
     }
 }

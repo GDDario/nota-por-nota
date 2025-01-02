@@ -8,9 +8,7 @@ final class GetAuthenticatedUserUseCase
 {
     public function __construct(
         private readonly AuthenticationServiceInterface $authenticationService
-    )
-    {
-    }
+    ) {}
 
     public function handle(): GetAuthenticatedUserOutputBoundary
     {

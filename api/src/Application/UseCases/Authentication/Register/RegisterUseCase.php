@@ -12,11 +12,9 @@ use Src\Domain\ValueObjects\Uuid;
 final class RegisterUseCase
 {
     public function __construct(
-        private readonly UserRepositoryInterface        $userRepository,
+        private readonly UserRepositoryInterface $userRepository,
         private readonly AuthenticationServiceInterface $authenticationService
-    )
-    {
-    }
+    ) {}
 
     public function handle(RegisterInputBoundary $input): RegisterOutputBoundary
     {
@@ -35,7 +33,7 @@ final class RegisterUseCase
         $userData = $this->userRepository->create($dto);
         $tokenData = $this->authenticationService->login([
             'email' => $input->email,
-            'password' => $input->password
+            'password' => $input->password,
         ]);
 
         return new RegisterOutputBoundary(

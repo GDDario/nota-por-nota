@@ -3,6 +3,7 @@
 namespace Tests\Feature\Authentication;
 
 use App\Models\User;
+
 use function Pest\Laravel\assertDatabaseCount;
 use function Pest\Laravel\assertDatabaseEmpty;
 use function Pest\Laravel\postJson;
@@ -11,7 +12,7 @@ const LOGIN_URI = '/api/login';
 
 beforeEach(function () {
     User::factory()->create([
-        'email' => 'john@doe.com'
+        'email' => 'john@doe.com',
     ]);
 });
 
@@ -19,7 +20,7 @@ describe('Login', function () {
     it('should login successfully', function () {
         $requestData = [
             'email' => 'john@doe.com',
-            'password' => 'password'
+            'password' => 'password',
         ];
 
         $response = $this->post(LOGIN_URI, $requestData);
@@ -28,8 +29,8 @@ describe('Login', function () {
         $response->assertJson([
             'data' => [
                 'user' => [
-                    'email' => 'john@doe.com'
-                ]
+                    'email' => 'john@doe.com',
+                ],
             ],
         ]);
         $response->assertJsonStructure([
@@ -40,12 +41,12 @@ describe('Login', function () {
                     'email',
                     'username',
                     'created_at',
-                    'updated_at'
+                    'updated_at',
                 ],
                 'access_token',
                 'refresh_token',
-                'expires_at'
-            ]
+                'expires_at',
+            ],
         ]);
         assertDatabaseCount('personal_access_tokens', 1);
         assertDatabaseCount('refresh_tokens', 1);
@@ -53,7 +54,7 @@ describe('Login', function () {
 
     it('should not login successfully with no email provided', function () {
         $requestData = [
-            'password' => 'password'
+            'password' => 'password',
         ];
 
         $response = postJson(LOGIN_URI, $requestData);
@@ -63,9 +64,9 @@ describe('Login', function () {
             'message' => 'The email field is required.',
             'errors' => [
                 'email' => [
-                    'The email field is required.'
-                ]
-            ]
+                    'The email field is required.',
+                ],
+            ],
         ]);
         assertDatabaseEmpty('personal_access_tokens');
         assertDatabaseEmpty('refresh_tokens');
@@ -74,7 +75,7 @@ describe('Login', function () {
     it('should not login successfully with invalid email', function () {
         $requestData = [
             'email' => 'not@johndoe.com',
-            'password' => 'password'
+            'password' => 'password',
         ];
 
         $response = postJson(LOGIN_URI, $requestData);
@@ -84,9 +85,9 @@ describe('Login', function () {
             'message' => 'The selected email is invalid.',
             'errors' => [
                 'email' => [
-                    'The selected email is invalid.'
-                ]
-            ]
+                    'The selected email is invalid.',
+                ],
+            ],
         ]);
         assertDatabaseEmpty('personal_access_tokens');
         assertDatabaseEmpty('refresh_tokens');
@@ -94,7 +95,7 @@ describe('Login', function () {
 
     it('should not login successfully with no password provided', function () {
         $requestData = [
-            'email' => 'john@doe.com'
+            'email' => 'john@doe.com',
         ];
 
         $response = postJson(LOGIN_URI, $requestData);
@@ -104,9 +105,9 @@ describe('Login', function () {
             'message' => 'The password field is required.',
             'errors' => [
                 'password' => [
-                    'The password field is required.'
-                ]
-            ]
+                    'The password field is required.',
+                ],
+            ],
         ]);
         assertDatabaseEmpty('personal_access_tokens');
         assertDatabaseEmpty('refresh_tokens');
@@ -115,7 +116,7 @@ describe('Login', function () {
     it('should not login successfully with invalid password and show generic error', function () {
         $requestData = [
             'email' => 'john@doe.com',
-            'password' => 'invalid_passwordy'
+            'password' => 'invalid_passwordy',
         ];
 
         $response = postJson(LOGIN_URI, $requestData);

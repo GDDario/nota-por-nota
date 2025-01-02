@@ -13,16 +13,15 @@ final class User
      * @throws DomainException
      */
     public function __construct(
-        public int       $id,
-        public Uuid      $uuid,
-        public string    $name,
-        public Email     $email,
-        public string    $username,
-        public DateTime  $createdAt,
+        public int $id,
+        public Uuid $uuid,
+        public string $name,
+        public Email $email,
+        public string $username,
+        public DateTime $createdAt,
         public ?DateTime $updatedAt = null,
         public ?DateTime $deleteAt = null,
-    )
-    {
+    ) {
         $this->validate();
     }
 
