@@ -14,13 +14,11 @@ Testar eficácia em variados cenarios de uso.
 ## Metodologia
 
 ### Tecnologias;
-Android Studio v8.5.1
 
-Flutter v3.24
-
-Dart v3.5
-
-PHP v3.3.9
+- PHP 8.4;
+- Dart 3.6;
+- Flutter 3.27;
+- PostgreSQL v17;
 
 ## Acadêmicos
 - [Arthur Vinicius da Silva Bertossi](https://github.com/arthurbertossi);
