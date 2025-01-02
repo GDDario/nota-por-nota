@@ -5,11 +5,8 @@ namespace Tests\Unit\Domain\Entity;
 use DateInterval;
 use DateTime;
 use Src\Domain\Entities\User;
-use Src\Domain\Exceptions\DomainException;
-use Src\Domain\Exceptions\InvalidEmailException;
-use Src\Domain\Exceptions\InvalidUuidException;
-use Src\Domain\ValueObjects\Email;
-use Src\Domain\ValueObjects\Uuid;
+use Src\Domain\Exceptions\{DomainException, InvalidEmailException, InvalidUuidException};
+use Src\Domain\ValueObjects\{Email, Uuid};
 
 describe('User', function () {
     test('it can be created with valid attributes', function () {
@@ -19,7 +16,7 @@ describe('User', function () {
             'John Doe',
             new Email('john@doe.com'),
             'johndoe456',
-            new DateTime
+            new DateTime()
         );
 
         expect($user)->toBeInstanceOf(User::class);
@@ -32,7 +29,7 @@ describe('User', function () {
             'John Doe',
             new Email('john@doe.com'),
             'johndoe456',
-            new DateTime
+            new DateTime()
         );
     })->throws(InvalidUuidException::class, 'Invalid Uuid format.');
 
@@ -43,7 +40,7 @@ describe('User', function () {
             '',
             new Email('john@doe.com'),
             'johndoe456',
-            new DateTime
+            new DateTime()
         );
     })->throws(DomainException::class, 'User name cannot be empty.');
 
@@ -54,7 +51,7 @@ describe('User', function () {
             'John Doe',
             new Email('Invalid email'),
             'johndoe456',
-            new DateTime
+            new DateTime()
         );
     })->throws(InvalidEmailException::class, 'Invalid email provided.');
 
@@ -65,12 +62,12 @@ describe('User', function () {
             'John Doe',
             new Email('john@doe.com'),
             '',
-            new DateTime
+            new DateTime()
         );
     })->throws(DomainException::class, 'The username is required.');
 
     test('it throws DomainException when updatedAt is earlier than createdAt', function () {
-        $createdAt = new DateTime;
+        $createdAt = new DateTime();
         $updatedAt = (clone $createdAt)->sub(new DateInterval('P1D'));
 
         new User(
@@ -85,8 +82,8 @@ describe('User', function () {
     })->throws(DomainException::class, 'The updatedAt date cannot be earlier than createdAt.');
 
     test('it throws DomainException when deleteAt is earlier than createdAt', function () {
-        $createdAt = new DateTime;
-        $deleteAt = (clone $createdAt)->sub(new DateInterval('P1D'));
+        $createdAt = new DateTime();
+        $deleteAt  = (clone $createdAt)->sub(new DateInterval('P1D'));
 
         new User(
             1,

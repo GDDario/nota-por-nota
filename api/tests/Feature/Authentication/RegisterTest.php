@@ -9,10 +9,10 @@ const REGISTER_URI = '/api/register';
 describe('Register', function () {
     it('should register successfully', function () {
         $requestData = [
-            'name' => 'John Doe',
-            'email' => 'john@doe.com',
-            'username' => 'jhondoe456',
-            'password' => 'password',
+            'name'                  => 'John Doe',
+            'email'                 => 'john@doe.com',
+            'username'              => 'jhondoe456',
+            'password'              => 'password',
             'password_confirmation' => 'password',
         ];
 
@@ -21,9 +21,9 @@ describe('Register', function () {
         $response->assertStatus(201);
         $response->assertJson([
             'message' => 'User created successfully.',
-            'data' => [
-                'name' => 'John Doe',
-                'email' => 'john@doe.com',
+            'data'    => [
+                'name'     => 'John Doe',
+                'email'    => 'john@doe.com',
                 'username' => 'jhondoe456',
             ],
         ]);

@@ -4,8 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginRequest;
 use Illuminate\Http\Response;
-use Src\Application\UseCases\Authentication\Login\LoginInputBoundary;
-use Src\Application\UseCases\Authentication\Login\LoginUseCase;
+use Src\Application\UseCases\Authentication\Login\{LoginInputBoundary, LoginUseCase};
 use Src\Domain\ValueObjects\Email;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
@@ -24,18 +23,18 @@ class LoginController
 
         return new Response([
             'message' => 'Successfully logged in.',
-            'data' => [
+            'data'    => [
                 'user' => [
-                    'uuid' => (string) $response->uuid,
-                    'name' => $response->name,
-                    'email' => (string) $response->email,
-                    'username' => $response->username,
+                    'uuid'       => (string) $response->uuid,
+                    'name'       => $response->name,
+                    'email'      => (string) $response->email,
+                    'username'   => $response->username,
                     'created_at' => $response->createdAt,
                     'updated_at' => $response->updatedAt,
                 ],
-                'access_token' => $response->tokenData->accessToken,
+                'access_token'  => $response->tokenData->accessToken,
                 'refresh_token' => $response->tokenData->refreshToken,
-                'expires_at' => $response->tokenData->expiresAt->format('Y-m-d\TH:i:s.u\Z'),
+                'expires_at'    => $response->tokenData->expiresAt->format('Y-m-d\TH:i:s.u\Z'),
             ],
         ], SymfonyResponse::HTTP_OK);
     }

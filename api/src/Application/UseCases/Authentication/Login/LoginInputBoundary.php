@@ -9,5 +9,6 @@ final class LoginInputBoundary
     public function __construct(
         public Email $email,
         public string $password
-    ) {}
+    ) {
+    }
 }

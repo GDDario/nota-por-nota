@@ -14,7 +14,8 @@ final class RegisterUseCase
     public function __construct(
         private readonly UserRepositoryInterface $userRepository,
         private readonly AuthenticationServiceInterface $authenticationService
-    ) {}
+    ) {
+    }
 
     public function handle(RegisterInputBoundary $input): RegisterOutputBoundary
     {
@@ -30,9 +31,9 @@ final class RegisterUseCase
             $input->password
         );
 
-        $userData = $this->userRepository->create($dto);
+        $userData  = $this->userRepository->create($dto);
         $tokenData = $this->authenticationService->login([
-            'email' => $input->email,
+            'email'    => $input->email,
             'password' => $input->password,
         ]);
 

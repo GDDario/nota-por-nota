@@ -3,8 +3,7 @@
 namespace Src\Application\UseCases\Authentication\GetAuthenticatedUser;
 
 use DateTime;
-use Src\Domain\ValueObjects\Email;
-use Src\Domain\ValueObjects\Uuid;
+use Src\Domain\ValueObjects\{Email, Uuid};
 
 final class GetAuthenticatedUserOutputBoundary
 {
@@ -15,5 +14,6 @@ final class GetAuthenticatedUserOutputBoundary
         public string $username,
         public DateTime $createdAt,
         public ?DateTime $updatedAt = null
-    ) {}
+    ) {
+    }
 }

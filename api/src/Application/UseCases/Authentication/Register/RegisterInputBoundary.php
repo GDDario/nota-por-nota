@@ -12,5 +12,6 @@ final class RegisterInputBoundary
         public string $username,
         public string $password,
         public string $passwordConfirmation
-    ) {}
+    ) {
+    }
 }

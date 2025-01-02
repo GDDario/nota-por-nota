@@ -6,8 +6,7 @@ use App\Models\User as UserModel;
 use Src\Application\DTOs\CreateUserDTO;
 use Src\Domain\Entities\User;
 use Src\Domain\Repositories\UserRepositoryInterface;
-use Src\Domain\ValueObjects\Email;
-use Src\Domain\ValueObjects\Uuid;
+use Src\Domain\ValueObjects\{Email, Uuid};
 
 final class UserEloquentRepository implements UserRepositoryInterface
 {
@@ -15,7 +14,7 @@ final class UserEloquentRepository implements UserRepositoryInterface
 
     public function __construct()
     {
-        $this->eloquentModel = new UserModel;
+        $this->eloquentModel = new UserModel();
     }
 
     public function findByEmail(Email $email): ?User
@@ -32,10 +31,10 @@ final class UserEloquentRepository implements UserRepositoryInterface
         $query = $this->eloquentModel->query();
 
         $model = $query->create([
-            'uuid' => $dto->uuid,
-            'name' => $dto->name,
+            'uuid'     => $dto->uuid,
+            'name'     => $dto->name,
             'username' => $dto->username,
-            'email' => $dto->email,
+            'email'    => $dto->email,
             'password' => $dto->password,
         ]);
 

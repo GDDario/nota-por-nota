@@ -11,7 +11,8 @@ final class LoginUseCase
     public function __construct(
         private readonly UserRepositoryInterface $userRepository,
         private readonly AuthenticationServiceInterface $authenticationService
-    ) {}
+    ) {
+    }
 
     /**
      * @throws AuthenticationException
@@ -19,7 +20,7 @@ final class LoginUseCase
     public function handle(LoginInputBoundary $input): LoginOutputBoundary
     {
         $tokenData = $this->authenticationService->login([
-            'email' => $input->email,
+            'email'    => $input->email,
             'password' => $input->password,
         ]);
 

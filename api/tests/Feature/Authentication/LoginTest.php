@@ -4,9 +4,7 @@ namespace Tests\Feature\Authentication;
 
 use App\Models\User;
 
-use function Pest\Laravel\assertDatabaseCount;
-use function Pest\Laravel\assertDatabaseEmpty;
-use function Pest\Laravel\postJson;
+use function Pest\Laravel\{assertDatabaseCount, assertDatabaseEmpty, postJson};
 
 const LOGIN_URI = '/api/login';
 
@@ -19,7 +17,7 @@ beforeEach(function () {
 describe('Login', function () {
     it('should login successfully', function () {
         $requestData = [
-            'email' => 'john@doe.com',
+            'email'    => 'john@doe.com',
             'password' => 'password',
         ];
 
@@ -62,7 +60,7 @@ describe('Login', function () {
         $response->assertStatus(422);
         $response->assertJson([
             'message' => 'The email field is required.',
-            'errors' => [
+            'errors'  => [
                 'email' => [
                     'The email field is required.',
                 ],
@@ -74,7 +72,7 @@ describe('Login', function () {
 
     it('should not login successfully with invalid email', function () {
         $requestData = [
-            'email' => 'not@johndoe.com',
+            'email'    => 'not@johndoe.com',
             'password' => 'password',
         ];
 
@@ -83,7 +81,7 @@ describe('Login', function () {
         $response->assertStatus(422);
         $response->assertJson([
             'message' => 'The selected email is invalid.',
-            'errors' => [
+            'errors'  => [
                 'email' => [
                     'The selected email is invalid.',
                 ],
@@ -103,7 +101,7 @@ describe('Login', function () {
         $response->assertStatus(422);
         $response->assertJson([
             'message' => 'The password field is required.',
-            'errors' => [
+            'errors'  => [
                 'password' => [
                     'The password field is required.',
                 ],
@@ -115,7 +113,7 @@ describe('Login', function () {
 
     it('should not login successfully with invalid password and show generic error', function () {
         $requestData = [
-            'email' => 'john@doe.com',
+            'email'    => 'john@doe.com',
             'password' => 'invalid_passwordy',
         ];
 

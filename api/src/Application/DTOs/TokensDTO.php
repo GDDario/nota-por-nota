@@ -10,5 +10,6 @@ final class TokensDTO
         public string $accessToken,
         public string $refreshToken,
         public DateTime $expiresAt
-    ) {}
+    ) {
+    }
 }

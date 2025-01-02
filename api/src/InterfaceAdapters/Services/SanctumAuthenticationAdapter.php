@@ -8,8 +8,7 @@ use Src\Application\DTOs\TokensDTO;
 use Src\Domain\Entities\User;
 use Src\Domain\Exceptions\AuthenticationException;
 use Src\Domain\Services\AuthenticationServiceInterface;
-use Src\Domain\ValueObjects\Email;
-use Src\Domain\ValueObjects\Uuid;
+use Src\Domain\ValueObjects\{Email, Uuid};
 
 final class SanctumAuthenticationAdapter implements AuthenticationServiceInterface
 {
@@ -19,14 +18,14 @@ final class SanctumAuthenticationAdapter implements AuthenticationServiceInterfa
      */
     public function login(array $credentials): TokensDTO
     {
-        if (! Auth::attempt($credentials)) {
-            throw new AuthenticationException;
+        if (!Auth::attempt($credentials)) {
+            throw new AuthenticationException();
         }
 
-        $user = Auth::user();
+        $user           = Auth::user();
         $expirationDate = now()->addMinutes((int) config('SANCTUM_EXPIRATION_TIME', 60));
 
-        $token = $user->createToken('access_token');
+        $token       = $user->createToken('access_token');
         $accessToken = $token->plainTextToken;
 
         $token->accessToken->forceFill([
@@ -36,7 +35,7 @@ final class SanctumAuthenticationAdapter implements AuthenticationServiceInterfa
         $refreshToken = bin2hex(random_bytes(40));
 
         $user->refreshTokens()->create([
-            'token' => hash('sha256', $refreshToken),
+            'token'      => hash('sha256', $refreshToken),
             'expires_at' => $expirationDate,
             'created_at' => now(),
         ]);

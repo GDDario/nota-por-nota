@@ -4,8 +4,7 @@ namespace Src\Application\UseCases\Authentication\Login;
 
 use DateTime;
 use Src\Application\DTOs\TokensDTO;
-use Src\Domain\ValueObjects\Email;
-use Src\Domain\ValueObjects\Uuid;
+use Src\Domain\ValueObjects\{Email, Uuid};
 
 final class LoginOutputBoundary
 {
@@ -17,5 +16,6 @@ final class LoginOutputBoundary
         public DateTime $createdAt,
         public TokensDTO $tokenData,
         public ?DateTime $updatedAt = null,
-    ) {}
+    ) {
+    }
 }

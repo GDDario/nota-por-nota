@@ -2,8 +2,7 @@
 
 namespace Src\Application\DTOs;
 
-use Src\Domain\ValueObjects\Email;
-use Src\Domain\ValueObjects\Uuid;
+use Src\Domain\ValueObjects\{Email, Uuid};
 
 final class CreateUserDTO
 {
@@ -13,5 +12,6 @@ final class CreateUserDTO
         public Email $email,
         public string $username,
         public string $password
-    ) {}
+    ) {
+    }
 }

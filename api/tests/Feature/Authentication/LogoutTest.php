@@ -4,10 +4,7 @@ namespace Tests\Feature\Authentication;
 
 use App\Models\User;
 
-use function Pest\Laravel\assertDatabaseCount;
-use function Pest\Laravel\assertDatabaseEmpty;
-use function Pest\Laravel\post;
-use function Pest\Laravel\postJson;
+use function Pest\Laravel\{assertDatabaseCount, assertDatabaseEmpty, post, postJson};
 
 const LOGOUT_URI = '/api/logout';
 
