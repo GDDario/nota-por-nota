@@ -17,7 +17,6 @@ class UserController extends Controller
 
     public function show(User $user)
     {
-        dd('oi');
         ds($user);
     }
 

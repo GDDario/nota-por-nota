@@ -12,4 +12,6 @@ interface AuthenticationServiceInterface
     public function logout(): void;
 
     public function getAuthenticatedUser(): User;
+
+    public function refreshAccessToken(string $refreshToken): TokensDTO;
 }
