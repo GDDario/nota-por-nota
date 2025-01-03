@@ -1,6 +1,8 @@
 <?php
 
+use App\Models\RefreshToken;
 use App\Models\User;
+use Carbon\Carbon;
 use function Pest\Laravel\{assertDatabaseCount};
 
 const LOGIN_URI = '/api/login';
@@ -56,6 +58,32 @@ describe('Refresh token', function () {
             'message' => 'The refresh token field is required.',
             'errors' => [
                 'refresh_token' => ['The refresh token field is required.'],
+            ],
+        ]);
+    });
+
+    it('should not refresh the access_token if the refresh_token has already expired', function () {
+        $user = User::factory()->create([
+            'email' => 'jhon@doe.com',
+        ]);
+        $loginRequestData = [
+            'email' => $user->email,
+            'password' => 'password',
+        ];
+
+        $loginResponse = $this->post(LOGIN_URI, $loginRequestData);
+        $refreshToken = $loginResponse->json()['data']['refresh_token'];
+        RefreshToken::query()->where('token', $refreshToken)->first()->update([
+            'expires_at' => Carbon::now()->subMinute(),
+        ]);
+        $refreshTokenRequestData = ['refresh_token' => $refreshToken];
+        $refreshTokenResponse = $this->postJson(REFRESH_TOKEN_URI, $refreshTokenRequestData);
+
+        $refreshTokenResponse->assertStatus(422);
+        $refreshTokenResponse->assertJson([
+            'message' => 'The refresh token has expired. Please log in again.',
+            'errors' => [
+                'refresh_token' => ['The refresh token has expired. Please log in again.'],
             ],
         ]);
     });
