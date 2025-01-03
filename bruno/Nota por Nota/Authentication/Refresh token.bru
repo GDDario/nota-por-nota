@@ -1,0 +1,22 @@
+meta {
+  name: Refresh token
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{url}}/refresh-token
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "refresh_token": "19c432eebf07c69fc0b2cc1f1fe1652e37f9a2f6b0543bb490c0da83acfbc4c6"
+    
+  }
+}
+
+script:post-response {
+  bru.setEnvVar('access_token', res.body.data?.access_token);
+}
