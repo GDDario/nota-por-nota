@@ -7,6 +7,7 @@ use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Auth;
 use Random\RandomException;
 use Src\Application\DTOs\TokensDTO;
+use Src\Application\Exceptions\InvalidRefreshTokenException;
 use Src\Domain\Entities\User;
 use Src\Domain\Exceptions\AuthenticationException;
 use Src\Domain\Services\AuthenticationServiceInterface;
@@ -51,9 +52,16 @@ final class SanctumAuthenticationAdapter implements AuthenticationServiceInterfa
         );
     }
 
+    /**
+     * @throws InvalidRefreshTokenException
+     */
     public function refreshAccessToken(string $refreshToken): TokensDTO
     {
         $refreshTokenModel = RefreshToken::query()->where('token', $refreshToken)->firstOrFail();
+
+        if (now() > $refreshTokenModel->expires_at) {
+            throw new InvalidRefreshTokenException('The refresh token has expired. Please log in again.');
+        }
 
         $userId = $refreshTokenModel->user_id;
 

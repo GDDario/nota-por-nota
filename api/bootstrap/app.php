@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\{Exceptions, Middleware};
 use Illuminate\Http\Request;
+use Src\Application\Exceptions\InvalidRefreshTokenException;
 use Src\Domain\Exceptions\AuthenticationException;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -22,6 +23,19 @@ return Application::configure(basePath: dirname(__DIR__))
                 return response(
                     ['message' => $e->getMessage()],
                     Response::HTTP_BAD_REQUEST
+                );
+            }
+            if ($e instanceof InvalidRefreshTokenException) {
+                return response(
+                    [
+                        'message' => $e->getMessage(),
+                        'errors' => [
+                            'refresh_token' => [
+                                $e->getMessage(),
+                            ],
+                        ],
+                    ],
+                    Response::HTTP_UNPROCESSABLE_ENTITY
                 );
             }
         });

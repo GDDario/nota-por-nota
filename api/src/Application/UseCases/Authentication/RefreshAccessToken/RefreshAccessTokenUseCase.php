@@ -2,6 +2,7 @@
 
 namespace Src\Application\UseCases\Authentication\RefreshAccessToken;
 
+use Src\Application\Exceptions\InvalidRefreshTokenException;
 use Src\Domain\Services\AuthenticationServiceInterface;
 
 final class RefreshAccessTokenUseCase
@@ -13,6 +14,7 @@ final class RefreshAccessTokenUseCase
 
     }
 
+    /** @throws InvalidRefreshTokenException */
     public function handle(RefreshTokenInputBoundary $input): RefreshTokenOutputBoundary
     {
         $tokensDTO = $this->authenticationService->refreshAccessToken(
