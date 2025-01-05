@@ -1,0 +1,24 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Nota por Nota",
+        "version": "0.0.1"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8000/api"
+        }
+    ],
+    "paths": {
+        "/api/login": {
+            "get": {
+                "operationId": "3ee807a03f0cbe39d33cadf9ffb19d14",
+                "responses": {
+                    "200": {
+                        "description": "An example endpoint"
+                    }
+                }
+            }
+        }
+    }
+}
