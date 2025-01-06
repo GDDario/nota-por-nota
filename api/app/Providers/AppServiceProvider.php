@@ -15,15 +15,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->singleton(
-            UserRepositoryInterface::class,
-            UserEloquentRepository::class
-        );
-
-        $this->app->singleton(
-            AuthenticationServiceInterface::class,
-            SanctumAuthenticationAdapter::class
-        );
+        $this->registerRepositories();
+        $this->registerServices();
     }
 
     /**
@@ -32,5 +25,21 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         //
+    }
+
+    private function registerRepositories(): void
+    {
+        $this->app->singleton(
+            UserRepositoryInterface::class,
+            UserEloquentRepository::class
+        );
+    }
+
+    private function registerServices(): void
+    {
+        $this->app->singleton(
+            AuthenticationServiceInterface::class,
+            SanctumAuthenticationAdapter::class
+        );
     }
 }
