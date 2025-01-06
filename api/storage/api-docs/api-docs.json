@@ -115,6 +115,56 @@
                 ]
             }
         },
+        "refresh-token": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Refresh Access Token",
+                "description": "Get a new access token using the refresh token.",
+                "operationId": "refreshToken",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RefreshTokenRequestVirtual"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Token refreshed successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RefreshTokenSuccessResponseVirtual"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "schema": "RefreshTokenEndpointVirtual",
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/InvalidRefreshTokenResponseVirtual"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/RefreshTokenFieldRequiredResponseVirtual"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "register": {
             "post": {
                 "tags": [
@@ -380,6 +430,118 @@
                                     "type": "string",
                                     "example": "The password field is required."
                                 }
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "RefreshTokenEndpointVirtual": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/InvalidRefreshTokenResponseVirtual"
+                    },
+                    {
+                        "$ref": "#/components/schemas/RefreshTokenFieldRequiredResponseVirtual"
+                    }
+                ]
+            },
+            "RefreshTokenRequestVirtual": {
+                "title": "Refresh Token Request",
+                "description": "Body data for refreshing access token",
+                "required": [
+                    "refresh_token"
+                ],
+                "properties": {
+                    "refresh_token": {
+                        "title": "Refresh Token",
+                        "description": "The refresh token used to generate a new access token.",
+                        "type": "string",
+                        "example": "4be8606e2deff652d104bf8035348cf253406841a44cf0d01ed15f1e477b6225"
+                    }
+                },
+                "type": "object"
+            },
+            "InvalidRefreshTokenResponseVirtual": {
+                "title": "Invalid Refresh Token Response",
+                "description": "Error response for invalid refresh token",
+                "properties": {
+                    "message": {
+                        "title": "Message",
+                        "description": "Error message",
+                        "type": "string",
+                        "example": "The selected refresh token is invalid."
+                    },
+                    "errors": {
+                        "title": "Errors",
+                        "description": "Detailed errors",
+                        "properties": {
+                            "refresh_token": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "example": "The selected refresh token is invalid."
+                                }
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "RefreshTokenFieldRequiredResponseVirtual": {
+                "title": "Refresh Token Field Required Response",
+                "description": "Error response when refresh token is not provided",
+                "properties": {
+                    "message": {
+                        "title": "Message",
+                        "description": "Error message",
+                        "type": "string",
+                        "example": "The refresh token field is required."
+                    },
+                    "errors": {
+                        "title": "Errors",
+                        "description": "Detailed errors",
+                        "properties": {
+                            "refresh_token": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "example": "The refresh token field is required."
+                                }
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "RefreshTokenSuccessResponseVirtual": {
+                "title": "Refresh Token Success Response",
+                "description": "Successful response containing new access and refresh tokens",
+                "properties": {
+                    "data": {
+                        "title": "Data",
+                        "description": "The data containing tokens and expiry.",
+                        "properties": {
+                            "access_token": {
+                                "title": "Access Token",
+                                "description": "The new access token",
+                                "type": "object",
+                                "example": "44|GnngQJl0zJEpSs2VscSSyQMudJRYG8cQ91eCMmGC6ec307ed"
+                            },
+                            "refresh_token": {
+                                "title": "Refresh Token",
+                                "description": "The new refresh token",
+                                "type": "object",
+                                "example": "4be8606e2deff652d104bf8035348cf253406841a44cf0d01ed15f1e477b6225"
+                            },
+                            "expires_at": {
+                                "title": "Expires At",
+                                "description": "The expiration date and time of the access token",
+                                "type": "object",
+                                "example": "2025-01-06T16:04:55.972540Z"
                             }
                         },
                         "type": "object"
