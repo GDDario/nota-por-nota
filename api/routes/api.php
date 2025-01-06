@@ -14,7 +14,7 @@ Route::post('refresh-token', RefreshTokenController::class);
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('logout', LogoutController::class);
 
-    Route::get('auth_user', AuthenticatedUserController::class);
+    Route::get('auth-user', AuthenticatedUserController::class);
 });
 
 // Route::get('/user', function (Request $request) {

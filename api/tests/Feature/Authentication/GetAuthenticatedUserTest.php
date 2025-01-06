@@ -6,7 +6,7 @@ use App\Models\User;
 
 use function Pest\Laravel\getJson;
 
-const GET_AUTHENTICATED_USER_URI = '/api/auth_user';
+const GET_AUTHENTICATED_USER_URI = '/api/auth-user';
 
 describe('Get authenticated user', function () {
     it('should bring the authenticated user data correctly', function () {
