@@ -38,7 +38,7 @@ class RegisterSuccessResponseVirtual
      *      @OA\Property(
      *          property="email",
      *          description="User email",
-     *          example="jhon@doe2.com"
+     *          example="jhon@doe.com"
      *      ),
      *      @OA\Property(
      *          property="username",

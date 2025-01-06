@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Response;
 use Src\Application\UseCases\Authentication\GetAuthenticatedUser\GetAuthenticatedUserUseCase;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class AuthenticatedUserController extends Controller
 {
@@ -20,6 +21,6 @@ class AuthenticatedUserController extends Controller
                 'created_at' => $response->createdAt,
                 'updated_at' => $response->updatedAt,
             ],
-        ], 200);
+        ], SymfonyResponse::HTTP_OK);
     }
 }

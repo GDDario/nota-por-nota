@@ -10,6 +10,43 @@
         }
     ],
     "paths": {
+        "auth-user": {
+            "get": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Get Authenticated User",
+                "description": "Retrieve the currently authenticated user's information.",
+                "operationId": "authUser",
+                "responses": {
+                    "200": {
+                        "description": "Authenticated user retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AuthUserSuccessResponseVirtual"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - User not authenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UnauthenticatedResponseVirtual"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "login": {
             "post": {
                 "tags": [
@@ -230,6 +267,56 @@
     },
     "components": {
         "schemas": {
+            "AuthUserSuccessResponseVirtual": {
+                "title": "Auth User Success Response",
+                "description": "Response containing authenticated user data",
+                "properties": {
+                    "data": {
+                        "title": "Data",
+                        "description": "The authenticated user's information",
+                        "properties": {
+                            "uuid": {
+                                "title": "UUID",
+                                "description": "Unique identifier of the user",
+                                "type": "object",
+                                "example": "e3643a0e-ff80-4617-b976-633ceb54798b"
+                            },
+                            "name": {
+                                "title": "Name",
+                                "description": "Name of the authenticated user",
+                                "type": "object",
+                                "example": "John Doe"
+                            },
+                            "email": {
+                                "title": "Email",
+                                "description": "Email of the authenticated user",
+                                "type": "object",
+                                "example": "jhon@doe.com"
+                            },
+                            "username": {
+                                "title": "Username",
+                                "description": "Username of the authenticated user",
+                                "type": "object",
+                                "example": "jhondoe"
+                            },
+                            "created_at": {
+                                "title": "Created At",
+                                "description": "Date and time when the user was created",
+                                "type": "object",
+                                "example": "2025-01-03T03:01:48.000000Z"
+                            },
+                            "updated_at": {
+                                "title": "Updated At",
+                                "description": "Date and time when the user was last updated",
+                                "type": "object",
+                                "example": "2025-01-03T03:01:48.000000Z"
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
             "UnauthenticatedResponseVirtual": {
                 "title": "Unauthenticated Response",
                 "description": "Error response for unauthenticated requests",
