@@ -4,16 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginRequest;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Log;
 use Src\Application\UseCases\Authentication\Login\{LoginInputBoundary, LoginUseCase};
 use Src\Domain\ValueObjects\Email;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 /**
- * @OA\Get(
- *     path="/api/login",
- *     @OA\Response(response="200", description="An example endpoint")
- * )
+ * @OA\Endpoint(ref="#/components/endpoints/LoginEndpointVirtual")
  */
 class LoginController
 {

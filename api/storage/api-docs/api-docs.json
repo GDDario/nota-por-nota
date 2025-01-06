@@ -10,15 +10,284 @@
         }
     ],
     "paths": {
-        "/api/login": {
-            "get": {
-                "operationId": "3ee807a03f0cbe39d33cadf9ffb19d14",
+        "login": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Login",
+                "description": "Login with email and password.",
+                "operationId": "login",
+                "parameters": [
+                    {
+                        "name": "accept",
+                        "in": "header",
+                        "description": "Accept header",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "application/json"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/LoginRequestVirtual"
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
-                        "description": "An example endpoint"
+                        "description": "Successful login",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/LoginSuccessResponseVirtual"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "schema": "LoginEndpointVirtual",
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/EmailFieldRequiredResponseVirtual"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/InvalidEmailResponseVirtual"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/PasswordFieldRequiredResponseVirtual"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Generic error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/InvalidCredentialsResponseVirtual"
+                                }
+                            }
+                        }
                     }
                 }
             }
         }
-    }
+    },
+    "components": {
+        "schemas": {
+            "LoginEndpointVirtual": {
+                "oneOf": [
+                    {
+                        "$ref": "#/components/schemas/EmailFieldRequiredResponseVirtual"
+                    },
+                    {
+                        "$ref": "#/components/schemas/InvalidEmailResponseVirtual"
+                    },
+                    {
+                        "$ref": "#/components/schemas/PasswordFieldRequiredResponseVirtual"
+                    }
+                ]
+            },
+            "LoginRequestVirtual": {
+                "title": "Login Request",
+                "description": "Login body data",
+                "required": [
+                    "email",
+                    "password"
+                ],
+                "properties": {
+                    "email": {
+                        "title": "Email",
+                        "description": "Email of the user",
+                        "type": "string",
+                        "example": "jhon@doe.com"
+                    },
+                    "password": {
+                        "title": "Password",
+                        "description": "Password of the user",
+                        "type": "string",
+                        "example": "password"
+                    }
+                },
+                "type": "object"
+            },
+            "EmailFieldRequiredResponseVirtual": {
+                "title": "Email Field Required Response",
+                "description": "Response returned when the email field is missing.",
+                "properties": {
+                    "message": {
+                        "title": "Message",
+                        "description": "Error message",
+                        "type": "string",
+                        "example": "The email field is required."
+                    },
+                    "errors": {
+                        "title": "Errors",
+                        "description": "Detailed validation errors",
+                        "properties": {
+                            "email": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "example": "The email field is required."
+                                }
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "InvalidCredentialsResponseVirtual": {
+                "title": "Invalid Credentials Response",
+                "description": "Response returned when invalid credentials are provided.",
+                "properties": {
+                    "message": {
+                        "title": "Message",
+                        "description": "Error message",
+                        "type": "string",
+                        "example": "Invalid credentials provided."
+                    }
+                },
+                "type": "object"
+            },
+            "InvalidEmailResponseVirtual": {
+                "title": "Invalid Email Response",
+                "description": "Response returned when the selected email is invalid.",
+                "properties": {
+                    "message": {
+                        "title": "Message",
+                        "description": "Error message",
+                        "type": "string",
+                        "example": "The selected email is invalid."
+                    },
+                    "errors": {
+                        "title": "Errors",
+                        "description": "Detailed validation errors",
+                        "properties": {
+                            "email": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "example": "The selected email is invalid."
+                                }
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "LoginSuccessResponseVirtual": {
+                "title": "Login successful response",
+                "description": "Successful JSON response login with user and token information.",
+                "properties": {
+                    "message": {
+                        "title": "Message",
+                        "description": "Success message",
+                        "type": "string",
+                        "example": "Successfully logged in."
+                    },
+                    "data": {
+                        "title": "Data",
+                        "description": "Data containing user information and tokens",
+                        "properties": {
+                            "user": {
+                                "properties": {
+                                    "uuid": {
+                                        "type": "string",
+                                        "example": "e3643a0e-ff80-4617-b976-633ceb54798b"
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "example": "John Doe"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "example": "jhon@doe.com"
+                                    },
+                                    "username": {
+                                        "type": "string",
+                                        "example": "jhondoe"
+                                    },
+                                    "created_at": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2025-01-03T03:01:48.000000Z"
+                                    },
+                                    "updated_at": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2025-01-03T03:01:48.000000Z"
+                                    }
+                                },
+                                "type": "object"
+                            },
+                            "access_token": {
+                                "type": "string",
+                                "example": "39|MYVmLxKl0WlKHlguSLlXxiAX6axPhaL2KRs1qYT107720ec2"
+                            },
+                            "refresh_token": {
+                                "type": "string",
+                                "example": "5fb948636531dbb16adc238e61c7b234acca2019b483f80d943b6b88bbc948b9"
+                            },
+                            "expires_at": {
+                                "type": "string",
+                                "format": "date-time",
+                                "example": "2025-01-05T21:43:32.861117Z"
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "PasswordFieldRequiredResponseVirtual": {
+                "title": "Password Field Required Response",
+                "description": "Response returned when the password field is missing.",
+                "properties": {
+                    "message": {
+                        "title": "Message",
+                        "description": "Error message",
+                        "type": "string",
+                        "example": "The password field is required."
+                    },
+                    "errors": {
+                        "title": "Errors",
+                        "description": "Detailed validation errors",
+                        "properties": {
+                            "password": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "example": "The password field is required."
+                                }
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Authentication",
+            "description": "Authentication"
+        }
+    ]
 }
