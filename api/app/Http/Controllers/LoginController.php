@@ -8,9 +8,6 @@ use Src\Application\UseCases\Authentication\Login\{LoginInputBoundary, LoginUseC
 use Src\Domain\ValueObjects\Email;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
-/**
- * @OA\Endpoint(ref="#/components/endpoints/LoginEndpointVirtual")
- */
 class LoginController
 {
     public function __invoke(
