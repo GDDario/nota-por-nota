@@ -8,7 +8,7 @@
 2. Copiar as variáveis de ambiente (`cp .env.example .env`);
 3. Rodar as *migrations* com os `seeders` (`php artisan migrate --seed`);
 4. Gerar a chave do aplicativo `php artisan key:generate`;
-5. Acessar a seguinte URL no navegador: http://127.0.0.1:8000/. Se estiver tudo certo, é para aparecer a tela padrão do Laravel.
+5. Acessar a seguinte URL no navegador: http://127.0.0.1:8000/. Se estiver tudo certo, aparecerá a tela padrão de pós-instalação do Laravel.
 
 ### Documentação
 
