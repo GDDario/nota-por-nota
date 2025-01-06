@@ -114,6 +114,68 @@
                     }
                 ]
             }
+        },
+        "register": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Register a new user",
+                "description": "User registration endpoint with name, email, username, and password.",
+                "operationId": "register",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RegisterRequestVirtual"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "User created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RegisterSuccessResponseVirtual"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "schema": "RegisterEndpointVirtual",
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/EmailAlreadyTakenResponseVirtual"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/UsernameAlreadyTakenResponseVirtual"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/PasswordConfirmationErrorResponseVirtual"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/NameFieldRequiredErrorResponseVirtual"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/EmailFieldRequiredErrorResponseVirtual"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/UsernameFieldRequiredErrorResponseVirtual"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "components": {
@@ -318,6 +380,285 @@
                                     "type": "string",
                                     "example": "The password field is required."
                                 }
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "RegisterEndpointVirtual": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/EmailAlreadyTakenResponseVirtual"
+                    },
+                    {
+                        "$ref": "#/components/schemas/UsernameAlreadyTakenResponseVirtual"
+                    },
+                    {
+                        "$ref": "#/components/schemas/PasswordConfirmationErrorResponseVirtual"
+                    },
+                    {
+                        "$ref": "#/components/schemas/NameFieldRequiredErrorResponseVirtual"
+                    },
+                    {
+                        "$ref": "#/components/schemas/EmailFieldRequiredErrorResponseVirtual"
+                    },
+                    {
+                        "$ref": "#/components/schemas/UsernameFieldRequiredErrorResponseVirtual"
+                    }
+                ]
+            },
+            "RegisterRequestVirtual": {
+                "title": "Register Request",
+                "description": "Request body for user registration",
+                "required": [
+                    "name",
+                    "email",
+                    "username",
+                    "password",
+                    "password_confirmation"
+                ],
+                "properties": {
+                    "name": {
+                        "title": "Name",
+                        "description": "Full name of the user",
+                        "type": "string",
+                        "example": "John Doe"
+                    },
+                    "email": {
+                        "title": "Email",
+                        "description": "Email address of the user",
+                        "type": "string",
+                        "example": "jhon@doe2.com"
+                    },
+                    "username": {
+                        "title": "Username",
+                        "description": "Username of the user",
+                        "type": "string",
+                        "example": "jhondoe2"
+                    },
+                    "password": {
+                        "title": "Password",
+                        "description": "Password for the user",
+                        "type": "string",
+                        "example": "password"
+                    },
+                    "password_confirmation": {
+                        "title": "Password Confirmation",
+                        "description": "Password confirmation field",
+                        "type": "string",
+                        "example": "password"
+                    }
+                },
+                "type": "object"
+            },
+            "EmailAlreadyTakenResponseVirtual": {
+                "title": "Email Already Taken Error",
+                "description": "Error response when the email is already taken",
+                "properties": {
+                    "message": {
+                        "title": "Message",
+                        "description": "Error message",
+                        "type": "string",
+                        "example": "The email has already been taken."
+                    },
+                    "errors": {
+                        "title": "Errors",
+                        "description": "Error details",
+                        "properties": {
+                            "email": {
+                                "description": "Email error",
+                                "type": "object",
+                                "example": "The email has already been taken."
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "EmailFieldRequiredErrorResponseVirtual": {
+                "title": "Email Field Required Error",
+                "description": "Error response when email field is missing",
+                "properties": {
+                    "message": {
+                        "title": "Message",
+                        "description": "Error message",
+                        "type": "string",
+                        "example": "The email field is required."
+                    },
+                    "errors": {
+                        "title": "Errors",
+                        "description": "Error details",
+                        "properties": {
+                            "email": {
+                                "description": "Email error",
+                                "type": "object",
+                                "example": "The email field is required."
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "NameFieldRequiredErrorResponseVirtual": {
+                "title": "Name Field Required Error",
+                "description": "Error response when name field is missing",
+                "properties": {
+                    "message": {
+                        "title": "Message",
+                        "description": "Error message",
+                        "type": "string",
+                        "example": "The name field is required."
+                    },
+                    "errors": {
+                        "title": "Errors",
+                        "description": "Error details",
+                        "properties": {
+                            "name": {
+                                "description": "Name error",
+                                "type": "object",
+                                "example": "The name field is required."
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "PasswordConfirmationErrorResponseVirtual": {
+                "title": "Password Confirmation Error",
+                "description": "Error response when password confirmation does not match",
+                "properties": {
+                    "message": {
+                        "title": "Message",
+                        "description": "Error message",
+                        "type": "string",
+                        "example": "The password field confirmation does not match."
+                    },
+                    "errors": {
+                        "title": "Errors",
+                        "description": "Error details",
+                        "properties": {
+                            "password": {
+                                "description": "Password confirmation error",
+                                "type": "object",
+                                "example": "The password field confirmation does not match."
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "RegisterSuccessResponseVirtual": {
+                "title": "User Created Successfully",
+                "description": "Successful registration response with user details and tokens",
+                "properties": {
+                    "message": {
+                        "title": "Message",
+                        "description": "Success message",
+                        "type": "string",
+                        "example": "User created successfully."
+                    },
+                    "data": {
+                        "title": "Data",
+                        "description": "User data object",
+                        "properties": {
+                            "uuid": {
+                                "description": "User UUID",
+                                "type": "object",
+                                "example": "4e2e178e-3404-4735-8e55-2a7203b3bacc"
+                            },
+                            "name": {
+                                "description": "User full name",
+                                "type": "object",
+                                "example": "John Doe"
+                            },
+                            "email": {
+                                "description": "User email",
+                                "type": "object",
+                                "example": "jhon@doe2.com"
+                            },
+                            "username": {
+                                "description": "User username",
+                                "type": "object",
+                                "example": "jhondoe2"
+                            },
+                            "created_at": {
+                                "description": "Creation timestamp",
+                                "type": "object",
+                                "example": "2025-01-06T00:22:53.000000Z"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "access_token": {
+                        "title": "Access Token",
+                        "description": "JWT access token for the user",
+                        "type": "string",
+                        "example": "40|0Enp6LH3GTo2lRAZ1StZKLCgnoQFEqOrrdp1KTeC3a7d4cec"
+                    },
+                    "refresh_token": {
+                        "title": "Refresh Token",
+                        "description": "JWT refresh token for the user",
+                        "type": "string",
+                        "example": "308616826d0f7a16c23436f048f0c19d81d658e7949e252571d332787d7ab95f"
+                    },
+                    "expires_at": {
+                        "title": "Expires At",
+                        "description": "Access token expiration date",
+                        "type": "string",
+                        "example": "2025-01-05T22:22:54.137246Z"
+                    }
+                },
+                "type": "object"
+            },
+            "UsernameAlreadyTakenResponseVirtual": {
+                "title": "Username Already Taken Error",
+                "description": "Error response when the username is already taken",
+                "properties": {
+                    "message": {
+                        "title": "Message",
+                        "description": "Error message",
+                        "type": "string",
+                        "example": "The username has already been taken."
+                    },
+                    "errors": {
+                        "title": "Errors",
+                        "description": "Error details",
+                        "properties": {
+                            "username": {
+                                "description": "Username error",
+                                "type": "object",
+                                "example": "The username has already been taken."
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "UsernameFieldRequiredErrorResponseVirtual": {
+                "title": "Username Field Required Error",
+                "description": "Error response when username field is missing",
+                "properties": {
+                    "message": {
+                        "title": "Message",
+                        "description": "Error message",
+                        "type": "string",
+                        "example": "The username field is required."
+                    },
+                    "errors": {
+                        "title": "Errors",
+                        "description": "Error details",
+                        "properties": {
+                            "username": {
+                                "description": "Username error",
+                                "type": "object",
+                                "example": "The username field is required."
                             }
                         },
                         "type": "object"
