@@ -13,3 +13,7 @@
 ### Documentação
 
 Para gerar a documentação pelo swagger, rode o seguinte comando: `php artisan l5-swagger:generate`.
+
+### Testes
+
+Para rodar a suite de testes, rode o comando `php artisan test`;
