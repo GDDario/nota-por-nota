@@ -25,7 +25,7 @@ class RegisterController
         );
 
         return new Response([
-            'message' => 'User created successfully.',
+            'message' => 'Registered successfully.',
             'data'    => [
                 'uuid'       => (string) $response->uuid,
                 'name'       => $response->name,

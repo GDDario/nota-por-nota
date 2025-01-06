@@ -20,7 +20,7 @@ describe('Register', function () {
 
         $response->assertStatus(201);
         $response->assertJson([
-            'message' => 'User created successfully.',
+            'message' => 'Registered successfully.',
             'data'    => [
                 'name'     => 'John Doe',
                 'email'    => 'john@doe.com',
