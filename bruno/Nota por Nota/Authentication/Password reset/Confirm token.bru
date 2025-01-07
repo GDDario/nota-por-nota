@@ -1,0 +1,21 @@
+meta {
+  name: Confirm token
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{url}}/reset-password/confirm-token
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{access_token}}
+}
+
+body:json {
+  {
+    "token": "o5Y5TxuMGNKfxdpBLIcbdbXmB61A0eXdHwjAsXhmeKOVX44AXiNX1ERnosGHse57tTW9FG46XBYhaGN38tHolqoL8UOibxpoUIJX"
+  }
+}
