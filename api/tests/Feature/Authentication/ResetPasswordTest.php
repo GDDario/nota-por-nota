@@ -30,7 +30,7 @@ describe('Reset password', function () {
     it('should not send the confirmation email case the email does not exists and show the success message anyway', function () {
         $url = RESET_PASSWORD_BASE_URI . "/send-email";
         $requestData = [
-            'email' => 'jhon@doe.com'
+            'email' => 'not.jhon@doe.com'
         ];
 
         $response = $this->post($url, $requestData);
@@ -38,6 +38,23 @@ describe('Reset password', function () {
         $response->assertStatus(200);
         $response->assertJson([
             'message' => 'If the email exists, we will send a verification link to you continue the reset process.'
+        ]);
+        assertDatabaseCount('password_reset_tokens', 0);
+    });
+
+    it('should show an error message case the email is not provided', function () {
+        $url = RESET_PASSWORD_BASE_URI . "/send-email";
+        $requestData = [
+        ];
+
+        $response = $this->postJson($url, $requestData);
+
+        $response->assertStatus(422);
+        $response->assertJson([
+            'message' => 'The email field is required.',
+            'errors' => [
+                'email' => ['The email field is required.']
+            ]
         ]);
     });
 });
