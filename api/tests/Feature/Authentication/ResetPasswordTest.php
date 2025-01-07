@@ -87,7 +87,6 @@ describe('Reset password', function () {
 
     describe('Confirm token', function () {
         it('should confirm the token passed in the URL', function () {
-            // Arrange
             $token = Str::random(100);
             PasswordResetToken::factory()->create([
                 'email' => 'john@doe.com',
@@ -97,10 +96,8 @@ describe('Reset password', function () {
                 'token' => $token
             ];
 
-            // Act
             $request = post(RESET_PASSWORD_BASE_URI . '/confirm-token', $requestBody);
 
-            // Assert
             $request->assertStatus(200);
             $request->assertJson(['message' => 'Token confirmed successfully.']);
         });

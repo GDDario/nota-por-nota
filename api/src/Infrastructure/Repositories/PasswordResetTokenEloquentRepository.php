@@ -16,7 +16,7 @@ final class PasswordResetTokenEloquentRepository implements PasswordResetTokenRe
         $this->eloquentModel = new PasswordResetTokenModel();
     }
 
-    public function findByToken(string $token): PasswordResetToken
+    public function findByToken(string $token): ?PasswordResetToken
     {
         $model = $this->eloquentModel->query()->where('token', $token)->first();
 

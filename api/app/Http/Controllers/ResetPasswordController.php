@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CheckEmailRequest;
 use App\Http\Requests\ConfirmPasswordResetTokenRequest;
 use Illuminate\Http\Response;
+use Src\Application\UseCases\Authentication\ConfirmPasswordResetToken\ConfirmPasswordResetTokenInputBoundary;
+use Src\Application\UseCases\Authentication\ConfirmPasswordResetToken\ConfirmPasswordResetTokenUseCase;
 use Src\Application\UseCases\Authentication\SendResetPasswordEmail\SendResetPasswordEmailInputBoundary;
 use Src\Application\UseCases\Authentication\SendResetPasswordEmail\SendResetPasswordEmailUseCase;
 use Src\Domain\Enums\PasswordResetTokenStatusesEnum;
@@ -16,7 +18,7 @@ class ResetPasswordController extends Controller
     public function confirmToken(
         ConfirmPasswordResetTokenRequest $request,
         ConfirmPasswordResetTokenUseCase $useCase
-    )
+    ): Response
     {
         $response = $useCase->handle(
             new ConfirmPasswordResetTokenInputBoundary(
@@ -24,9 +26,9 @@ class ResetPasswordController extends Controller
             )
         );
 
-        if ($response->status === PasswordResetTokenStatusesEnum::CONFIRMED->value) {
+        if ($response->status === PasswordResetTokenStatusesEnum::CONFIRMED) {
             return new Response(['message' => 'Token confirmed successfully.'], SymfonyResponse::HTTP_OK);
-        } else if ($response->status === PasswordResetTokenStatusesEnum::EXPIRED->value) {
+        } else if ($response->status === PasswordResetTokenStatusesEnum::EXPIRED) {
             return new Response([
                 'message' => 'Invalid token provided.',
                 'error' => 'Token already expired.',
