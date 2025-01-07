@@ -1,0 +1,37 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Requests\CheckEmailRequest;
+use Illuminate\Http\Response;
+use Src\Application\UseCases\Authentication\SendResetPasswordEmail\SendResetPasswordEmailInputBoundary;
+use Src\Application\UseCases\Authentication\SendResetPasswordEmail\SendResetPasswordEmailUseCase;
+use Src\Domain\ValueObjects\Email;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
+
+class ResetPasswordController extends Controller
+{
+    public function checkToken()
+    {
+
+    }
+
+    public function sendEmail(
+        CheckEmailRequest $request,
+        SendResetPasswordEmailUseCase $useCase
+    ): Response
+    {
+        $useCase->handle(
+            new SendResetPasswordEmailInputBoundary(
+                new Email($request->get('email'))
+            )
+        );
+
+        return new Response(['message' => 'If the email exists, we will send a verification link to you continue the reset process.'], SymfonyResponse::HTTP_OK);
+    }
+
+    public function resetPassword()
+    {
+
+    }
+}

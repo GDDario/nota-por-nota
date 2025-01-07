@@ -1,0 +1,21 @@
+meta {
+  name: Verify email
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{url}}/reset-password/send-email
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{access_token}}
+}
+
+body:json {
+  {
+    "email": "john@doe.com"
+  }
+}

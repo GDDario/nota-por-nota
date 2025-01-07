@@ -1,0 +1,29 @@
+<?php
+
+use App\Models\User;
+use function Pest\Laravel\{assertDatabaseCount};
+
+const RESET_PASSWORD_BASE_URI = '/api/reset-password';
+
+beforeEach(functioN () {
+    User::factory()->create([
+        'email' => 'jhon@doe.com',
+    ]);
+});
+
+describe('Reset password', function () {
+    it('should send the confirmation email case the email exists and show a success message', function () {
+        $url = RESET_PASSWORD_BASE_URI . "/send-email";
+        $requestData = [
+            'email' => 'jhon@doe.com'
+        ];
+
+        $response = $this->post($url, $requestData);
+
+        $response->assertStatus(200);
+        $response->assertJson([
+            'message' => 'If the email exists, we will send a verification link to you continue the reset process.'
+        ]);
+        assertDatabaseCount('password_reset_tokens', 1);
+    });
+});

@@ -4,7 +4,8 @@ use App\Http\Controllers\{AuthenticatedUserController,
     LoginController,
     LogoutController,
     RefreshTokenController,
-    RegisterController};
+    RegisterController,
+    ResetPasswordController};
 use Illuminate\Support\Facades\Route;
 
 Route::post('register', RegisterController::class);
@@ -15,6 +16,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('logout', LogoutController::class);
 
     Route::get('auth-user', AuthenticatedUserController::class);
+});
+
+Route::prefix('reset-password')->group(function () {
+    Route::post('send-email', [ResetPasswordController::class, 'sendEmail']);
 });
 
 // Route::get('/user', function (Request $request) {
