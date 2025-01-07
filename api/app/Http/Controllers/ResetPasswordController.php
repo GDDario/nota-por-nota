@@ -3,21 +3,44 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CheckEmailRequest;
+use App\Http\Requests\ConfirmPasswordResetTokenRequest;
 use Illuminate\Http\Response;
 use Src\Application\UseCases\Authentication\SendResetPasswordEmail\SendResetPasswordEmailInputBoundary;
 use Src\Application\UseCases\Authentication\SendResetPasswordEmail\SendResetPasswordEmailUseCase;
+use Src\Domain\Enums\PasswordResetTokenStatusesEnum;
 use Src\Domain\ValueObjects\Email;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class ResetPasswordController extends Controller
 {
-    public function checkToken()
+    public function confirmToken(
+        ConfirmPasswordResetTokenRequest $request,
+        ConfirmPasswordResetTokenUseCase $useCase
+    )
     {
+        $response = $useCase->handle(
+            new ConfirmPasswordResetTokenInputBoundary(
+                $request->get('token')
+            )
+        );
 
+        if ($response->status === PasswordResetTokenStatusesEnum::CONFIRMED->value) {
+            return new Response(['message' => 'Token confirmed successfully.'], SymfonyResponse::HTTP_OK);
+        } else if ($response->status === PasswordResetTokenStatusesEnum::EXPIRED->value) {
+            return new Response([
+                'message' => 'Invalid token provided.',
+                'error' => 'Token already expired.',
+            ], SymfonyResponse::HTTP_BAD_REQUEST);
+        } else {
+            return new Response([
+                'message' => 'Invalid token provided.',
+                'error' => 'Invalid or already used token.',
+            ], SymfonyResponse::HTTP_BAD_REQUEST);
+        }
     }
 
     public function sendEmail(
-        CheckEmailRequest $request,
+        CheckEmailRequest             $request,
         SendResetPasswordEmailUseCase $useCase
     ): Response
     {

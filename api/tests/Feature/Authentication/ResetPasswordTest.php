@@ -1,83 +1,108 @@
 <?php
 
 use App\Mail\SendResetPasswordEmail;
+use App\Models\PasswordResetToken;
 use App\Models\User;
 use Illuminate\Support\Facades\Mail;
-use function Pest\Laravel\{assertDatabaseCount};
+use Illuminate\Support\Str;
+use function Pest\Laravel\{assertDatabaseCount, get, post};
 
 const RESET_PASSWORD_BASE_URI = '/api/reset-password';
 
-beforeEach(functioN () {
+beforeEach(function () {
     User::factory()->create([
         'email' => 'john@doe.com',
     ]);
 });
 
 describe('Reset password', function () {
-    it('should send the confirmation email case the email exists and show a success message', function () {
-        Mail::fake();
-        $url = RESET_PASSWORD_BASE_URI . "/send-email";
-        $requestData = [
-            'email' => 'john@doe.com'
-        ];
+    describe('Send email', function () {
+        it('should send the confirmation email case the email exists and show a success message', function () {
+            Mail::fake();
+            $url = RESET_PASSWORD_BASE_URI . "/send-email";
+            $requestData = [
+                'email' => 'john@doe.com'
+            ];
 
-        $response = $this->post($url, $requestData);
+            $response = $this->post($url, $requestData);
 
-        $response->assertStatus(200);
-        $response->assertJson([
-            'message' => 'If the email exists, we will send a verification link to you continue the reset process.'
-        ]);
-        assertDatabaseCount('password_reset_tokens', 1);
-        Mail::assertSent(SendResetPasswordEmail::class, 'john@doe.com');
+            $response->assertStatus(200);
+            $response->assertJson([
+                'message' => 'If the email exists, we will send a verification link to you continue the reset process.'
+            ]);
+            assertDatabaseCount('password_reset_tokens', 1);
+            Mail::assertSent(SendResetPasswordEmail::class, 'john@doe.com');
+        });
+
+        it('should not send the confirmation email case the email does not exists and show the success message anyway', function () {
+            Mail::fake();
+            $url = RESET_PASSWORD_BASE_URI . "/send-email";
+            $requestData = [
+                'email' => 'not.john@doe.com'
+            ];
+
+            $response = $this->post($url, $requestData);
+
+            $response->assertStatus(200);
+            $response->assertJson([
+                'message' => 'If the email exists, we will send a verification link to you continue the reset process.'
+            ]);
+            assertDatabaseCount('password_reset_tokens', 0);
+            Mail::assertNotSent(SendResetPasswordEmail::class, 'john@doe.com');
+        });
+
+        it('should show an error message case the email is not provided', function () {
+            $url = RESET_PASSWORD_BASE_URI . "/send-email";
+            $requestData = [
+            ];
+
+            $response = $this->postJson($url, $requestData);
+
+            $response->assertStatus(422);
+            $response->assertJson([
+                'message' => 'The email field is required.',
+                'errors' => [
+                    'email' => ['The email field is required.']
+                ]
+            ]);
+        });
+
+        it('should show an error message case the email provided is an invalid one', function () {
+            $url = RESET_PASSWORD_BASE_URI . "/send-email";
+            $requestData = [
+                'email' => 'invalid email'
+            ];
+
+            $response = $this->postJson($url, $requestData);
+
+            $response->assertStatus(422);
+            $response->assertJson([
+                'message' => 'The email field must be a valid email address.',
+                'errors' => [
+                    'email' => ['The email field must be a valid email address.']
+                ]
+            ]);
+        });
     });
 
-    it('should not send the confirmation email case the email does not exists and show the success message anyway', function () {
-        Mail::fake();
-        $url = RESET_PASSWORD_BASE_URI . "/send-email";
-        $requestData = [
-            'email' => 'not.john@doe.com'
-        ];
+    describe('Confirm token', function () {
+        it('should confirm the token passed in the URL', function () {
+            // Arrange
+            $token = Str::random(100);
+            PasswordResetToken::factory()->create([
+                'email' => 'john@doe.com',
+                'token' => $token
+            ]);
+            $requestBody = [
+                'token' => $token
+            ];
 
-        $response = $this->post($url, $requestData);
+            // Act
+            $request = post(RESET_PASSWORD_BASE_URI . '/confirm-token', $requestBody);
 
-        $response->assertStatus(200);
-        $response->assertJson([
-            'message' => 'If the email exists, we will send a verification link to you continue the reset process.'
-        ]);
-        assertDatabaseCount('password_reset_tokens', 0);
-        Mail::assertNotSent(SendResetPasswordEmail::class, 'john@doe.com');
-    });
-
-    it('should show an error message case the email is not provided', function () {
-        $url = RESET_PASSWORD_BASE_URI . "/send-email";
-        $requestData = [
-        ];
-
-        $response = $this->postJson($url, $requestData);
-
-        $response->assertStatus(422);
-        $response->assertJson([
-            'message' => 'The email field is required.',
-            'errors' => [
-                'email' => ['The email field is required.']
-            ]
-        ]);
-    });
-
-    it('should show an error message case the email provided is an invalid one', function () {
-        $url = RESET_PASSWORD_BASE_URI . "/send-email";
-        $requestData = [
-            'email' => 'invalid email'
-        ];
-
-        $response = $this->postJson($url, $requestData);
-
-        $response->assertStatus(422);
-        $response->assertJson([
-            'message' => 'The email field must be a valid email address.',
-            'errors' => [
-                'email' => ['The email field must be a valid email address.']
-            ]
-        ]);
+            // Assert
+            $request->assertStatus(200);
+            $request->assertJson(['message' => 'Token confirmed successfully.']);
+        });
     });
 });
