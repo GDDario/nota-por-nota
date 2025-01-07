@@ -22,9 +22,12 @@ final class PasswordResetTokenEloquentRepository implements PasswordResetTokenRe
         }
         $query = $this->eloquentModel->query();
 
+        $expiresAt = now()->addMinutes(config('PASSWORD_RESET_TOKEN_EXPIRATION_TIME', 60))->toDateTime();
+
         $query->create([
             'email' => $email,
             'token' => $token,
+            'expires_at' => $expiresAt,
             'created_at' => now()
         ]);
     }
