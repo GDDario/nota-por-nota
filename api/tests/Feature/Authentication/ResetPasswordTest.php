@@ -26,4 +26,18 @@ describe('Reset password', function () {
         ]);
         assertDatabaseCount('password_reset_tokens', 1);
     });
+
+    it('should not send the confirmation email case the email does not exists and show the success message anyway', function () {
+        $url = RESET_PASSWORD_BASE_URI . "/send-email";
+        $requestData = [
+            'email' => 'jhon@doe.com'
+        ];
+
+        $response = $this->post($url, $requestData);
+
+        $response->assertStatus(200);
+        $response->assertJson([
+            'message' => 'If the email exists, we will send a verification link to you continue the reset process.'
+        ]);
+    });
 });
