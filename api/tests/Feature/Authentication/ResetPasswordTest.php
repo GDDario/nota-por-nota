@@ -57,4 +57,21 @@ describe('Reset password', function () {
             ]
         ]);
     });
+
+    it('should show an error message case the email provided is an invalid one', function () {
+        $url = RESET_PASSWORD_BASE_URI . "/send-email";
+        $requestData = [
+            'email' => 'invalid email'
+        ];
+
+        $response = $this->postJson($url, $requestData);
+
+        $response->assertStatus(422);
+        $response->assertJson([
+            'message' => 'The email field must be a valid email address.',
+            'errors' => [
+                'email' => ['The email field must be a valid email address.']
+            ]
+        ]);
+    });
 });
