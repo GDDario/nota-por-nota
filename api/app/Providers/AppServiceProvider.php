@@ -4,13 +4,10 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Src\Application\Interfaces\EmailServiceInterface;
-use Src\Domain\Repositories\PasswordResetTokenRepositoryInterface;
-use Src\Domain\Repositories\UserRepositoryInterface;
+use Src\Domain\Repositories\{PasswordResetTokenRepositoryInterface, UserRepositoryInterface};
 use Src\Domain\Services\AuthenticationServiceInterface;
-use Src\Infrastructure\Repositories\PasswordResetTokenEloquentRepository;
-use Src\Infrastructure\Repositories\UserEloquentRepository;
-use Src\InterfaceAdapters\Services\SanctumAuthenticationAdapter;
-use Src\InterfaceAdapters\Services\SmtpEmailService;
+use Src\Infrastructure\Repositories\{PasswordResetTokenEloquentRepository, UserEloquentRepository};
+use Src\InterfaceAdapters\Services\{SanctumAuthenticationAdapter, SmtpEmailService};
 
 class AppServiceProvider extends ServiceProvider
 {

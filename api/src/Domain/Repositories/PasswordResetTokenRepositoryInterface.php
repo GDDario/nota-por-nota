@@ -2,9 +2,7 @@
 
 namespace Src\Domain\Repositories;
 
-use Src\Application\DTOs\CreateUserDTO;
-use Src\Domain\Entities\PasswordResetToken;
-use Src\Domain\Entities\User;
+use Src\Domain\Entities\{PasswordResetToken};
 use Src\Domain\ValueObjects\Email;
 
 interface PasswordResetTokenRepositoryInterface

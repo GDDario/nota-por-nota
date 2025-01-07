@@ -33,10 +33,10 @@ final class PasswordResetTokenEloquentRepository implements PasswordResetTokenRe
         $expiresAt = now()->addMinutes(config('PASSWORD_RESET_TOKEN_EXPIRATION_TIME', 60))->toDateTime();
 
         $newModel = $query->create([
-            'email' => $email,
-            'token' => $token,
+            'email'      => $email,
+            'token'      => $token,
             'expires_at' => $expiresAt,
-            'created_at' => now()
+            'created_at' => now(),
         ]);
 
         return $this->hydrateEntity($newModel);

@@ -8,8 +8,7 @@ final class RefreshTokenOutputBoundary
 {
     public function __construct(
         public readonly TokensDTO $tokensDTO
-    )
-    {
+    ) {
 
     }
 }

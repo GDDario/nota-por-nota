@@ -8,8 +8,6 @@ final class ConfirmPasswordResetTokenOutputBoundary
 {
     public function __construct(
         public PasswordResetTokenStatusesEnum $status
-    )
-    {
-
+    ) {
     }
 }

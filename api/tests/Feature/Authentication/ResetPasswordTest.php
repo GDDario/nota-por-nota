@@ -1,11 +1,11 @@
 <?php
 
 use App\Mail\SendResetPasswordEmail;
-use App\Models\PasswordResetToken;
-use App\Models\User;
+use App\Models\{PasswordResetToken, User};
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
-use function Pest\Laravel\{assertDatabaseCount, get, post, postJson};
+
+use function Pest\Laravel\{assertDatabaseCount, post, postJson};
 
 const RESET_PASSWORD_BASE_URI = '/api/reset-password';
 
@@ -19,16 +19,16 @@ describe('Reset password', function () {
     describe('Send email', function () {
         it('should send the confirmation email case the email exists and show a success message', function () {
             Mail::fake();
-            $url = RESET_PASSWORD_BASE_URI . "/send-email";
+            $url         = RESET_PASSWORD_BASE_URI . "/send-email";
             $requestData = [
-                'email' => 'john@doe.com'
+                'email' => 'john@doe.com',
             ];
 
             $response = $this->post($url, $requestData);
 
             $response->assertStatus(200);
             $response->assertJson([
-                'message' => 'If the email exists, we will send a verification link to you continue the reset process.'
+                'message' => 'If the email exists, we will send a verification link to you continue the reset process.',
             ]);
             assertDatabaseCount('password_reset_tokens', 1);
             Mail::assertSent(SendResetPasswordEmail::class, 'john@doe.com');
@@ -36,23 +36,23 @@ describe('Reset password', function () {
 
         it('should not send the confirmation email case the email does not exists and show the success message anyway', function () {
             Mail::fake();
-            $url = RESET_PASSWORD_BASE_URI . "/send-email";
+            $url         = RESET_PASSWORD_BASE_URI . "/send-email";
             $requestData = [
-                'email' => 'not.john@doe.com'
+                'email' => 'not.john@doe.com',
             ];
 
             $response = $this->post($url, $requestData);
 
             $response->assertStatus(200);
             $response->assertJson([
-                'message' => 'If the email exists, we will send a verification link to you continue the reset process.'
+                'message' => 'If the email exists, we will send a verification link to you continue the reset process.',
             ]);
             assertDatabaseCount('password_reset_tokens', 0);
             Mail::assertNotSent(SendResetPasswordEmail::class, 'john@doe.com');
         });
 
         it('should show an error message case the email is not provided', function () {
-            $url = RESET_PASSWORD_BASE_URI . "/send-email";
+            $url         = RESET_PASSWORD_BASE_URI . "/send-email";
             $requestData = [
             ];
 
@@ -61,16 +61,16 @@ describe('Reset password', function () {
             $response->assertStatus(422);
             $response->assertJson([
                 'message' => 'The email field is required.',
-                'errors' => [
-                    'email' => ['The email field is required.']
-                ]
+                'errors'  => [
+                    'email' => ['The email field is required.'],
+                ],
             ]);
         });
 
         it('should show an error message case the email provided is an invalid one', function () {
-            $url = RESET_PASSWORD_BASE_URI . "/send-email";
+            $url         = RESET_PASSWORD_BASE_URI . "/send-email";
             $requestData = [
-                'email' => 'invalid email'
+                'email' => 'invalid email',
             ];
 
             $response = $this->postJson($url, $requestData);
@@ -78,9 +78,9 @@ describe('Reset password', function () {
             $response->assertStatus(422);
             $response->assertJson([
                 'message' => 'The email field must be a valid email address.',
-                'errors' => [
-                    'email' => ['The email field must be a valid email address.']
-                ]
+                'errors'  => [
+                    'email' => ['The email field must be a valid email address.'],
+                ],
             ]);
         });
     });
@@ -90,10 +90,10 @@ describe('Reset password', function () {
             $token = Str::random(100);
             PasswordResetToken::factory()->create([
                 'email' => 'john@doe.com',
-                'token' => $token
+                'token' => $token,
             ]);
             $requestBody = [
-                'token' => $token
+                'token' => $token,
             ];
 
             $request = post(RESET_PASSWORD_BASE_URI . '/confirm-token', $requestBody);
@@ -106,10 +106,10 @@ describe('Reset password', function () {
             $token = Str::random(100);
             PasswordResetToken::factory()->create([
                 'email' => 'john@doe.com',
-                'token' => $token
+                'token' => $token,
             ]);
             $requestBody = [
-                'token' => 'Invalid token'
+                'token' => 'Invalid token',
             ];
 
             $request = post(RESET_PASSWORD_BASE_URI . '/confirm-token', $requestBody);
@@ -117,19 +117,19 @@ describe('Reset password', function () {
             $request->assertStatus(400);
             $request->assertJson([
                 'message' => 'Invalid token provided.',
-                'error' => 'Invalid or already used token.'
+                'error'   => 'Invalid or already used token.',
             ]);
         });
 
         it('should not confirm if the token is already expired and show an error message', function () {
             $token = Str::random(100);
             PasswordResetToken::factory()->create([
-                'email' => 'john@doe.com',
-                'token' => $token,
-                'expires_at' => now()
+                'email'      => 'john@doe.com',
+                'token'      => $token,
+                'expires_at' => now(),
             ]);
             $requestBody = [
-                'token' => $token
+                'token' => $token,
             ];
 
             $request = post(RESET_PASSWORD_BASE_URI . '/confirm-token', $requestBody);
@@ -137,7 +137,7 @@ describe('Reset password', function () {
             $request->assertStatus(400);
             $request->assertJson([
                 'message' => 'Invalid token provided.',
-                'error' => 'Token already expired.'
+                'error'   => 'Token already expired.',
             ]);
         });
 
@@ -145,7 +145,7 @@ describe('Reset password', function () {
             $token = Str::random(100);
             PasswordResetToken::factory()->create([
                 'email' => 'john@doe.com',
-                'token' => $token
+                'token' => $token,
             ]);
             $requestBody = [
             ];
@@ -155,11 +155,11 @@ describe('Reset password', function () {
             $request->assertStatus(422);
             $request->assertJson([
                 'message' => 'The token field is required.',
-                'errors' => [
+                'errors'  => [
                     'token' => [
-                        'The token field is required.'
-                    ]
-                ]
+                        'The token field is required.',
+                    ],
+                ],
             ]);
         });
     });

@@ -1,11 +1,11 @@
 <?php
 
-use App\Models\RefreshToken;
-use App\Models\User;
+use App\Models\{RefreshToken, User};
 use Carbon\Carbon;
+
 use function Pest\Laravel\{assertDatabaseCount};
 
-const LOGIN_URI = '/api/login';
+const LOGIN_URI         = '/api/login';
 const REFRESH_TOKEN_URI = '/api/refresh-token';
 
 describe('Refresh token', function () {
@@ -14,12 +14,12 @@ describe('Refresh token', function () {
             'email' => 'jhon@doe.com',
         ]);
         $loginRequestData = [
-            'email' => $user->email,
+            'email'    => $user->email,
             'password' => 'password',
         ];
 
-        $loginResponse = $this->post(LOGIN_URI, $loginRequestData);
-        $refreshToken = $loginResponse->json()['data']['refresh_token'];
+        $loginResponse           = $this->post(LOGIN_URI, $loginRequestData);
+        $refreshToken            = $loginResponse->json()['data']['refresh_token'];
         $refreshTokenRequestData = ['refresh_token' => $refreshToken];
 
         $refreshTokenResponse = $this->post(REFRESH_TOKEN_URI, $refreshTokenRequestData);
@@ -43,7 +43,7 @@ describe('Refresh token', function () {
         $refreshTokenResponse->assertStatus(422);
         $refreshTokenResponse->assertJson([
             'message' => 'The selected refresh token is invalid.',
-            'errors' => [
+            'errors'  => [
                 'refresh_token' => ['The selected refresh token is invalid.'],
             ],
         ]);
@@ -56,7 +56,7 @@ describe('Refresh token', function () {
         $refreshTokenResponse->assertStatus(422);
         $refreshTokenResponse->assertJson([
             'message' => 'The refresh token field is required.',
-            'errors' => [
+            'errors'  => [
                 'refresh_token' => ['The refresh token field is required.'],
             ],
         ]);
@@ -67,22 +67,22 @@ describe('Refresh token', function () {
             'email' => 'jhon@doe.com',
         ]);
         $loginRequestData = [
-            'email' => $user->email,
+            'email'    => $user->email,
             'password' => 'password',
         ];
 
         $loginResponse = $this->post(LOGIN_URI, $loginRequestData);
-        $refreshToken = $loginResponse->json()['data']['refresh_token'];
+        $refreshToken  = $loginResponse->json()['data']['refresh_token'];
         RefreshToken::query()->where('token', $refreshToken)->first()->update([
             'expires_at' => Carbon::now()->subMinute(),
         ]);
         $refreshTokenRequestData = ['refresh_token' => $refreshToken];
-        $refreshTokenResponse = $this->postJson(REFRESH_TOKEN_URI, $refreshTokenRequestData);
+        $refreshTokenResponse    = $this->postJson(REFRESH_TOKEN_URI, $refreshTokenRequestData);
 
         $refreshTokenResponse->assertStatus(422);
         $refreshTokenResponse->assertJson([
             'message' => 'The refresh token has expired. Please log in again.',
-            'errors' => [
+            'errors'  => [
                 'refresh_token' => ['The refresh token has expired. Please log in again.'],
             ],
         ]);

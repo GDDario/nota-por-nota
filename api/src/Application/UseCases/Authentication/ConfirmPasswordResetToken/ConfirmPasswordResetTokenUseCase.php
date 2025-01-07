@@ -15,9 +15,8 @@ final class ConfirmPasswordResetTokenUseCase
 
     public function handle(
         ConfirmPasswordResetTokenInputBoundary $input
-    ): ConfirmPasswordResetTokenOutputBoundary
-    {
-        $token = $this->tokenRepository->findByToken($input->token);
+    ): ConfirmPasswordResetTokenOutputBoundary {
+        $token  = $this->tokenRepository->findByToken($input->token);
         $status = PasswordResetTokenStatusesEnum::CONFIRMED;
 
         if (!$token) {

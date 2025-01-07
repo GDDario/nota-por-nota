@@ -9,8 +9,7 @@ final class RefreshAccessTokenUseCase
 {
     public function __construct(
         private AuthenticationServiceInterface $authenticationService
-    )
-    {
+    ) {
 
     }
 

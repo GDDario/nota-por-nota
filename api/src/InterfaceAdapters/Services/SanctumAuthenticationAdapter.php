@@ -72,10 +72,10 @@ final class SanctumAuthenticationAdapter implements AuthenticationServiceInterfa
 
     public function generateTokens(?Authenticatable $user): TokensDTO
     {
-        $accessTokenExpirationDate = now()->addMinutes((int)config('ACCESS_TOKEN_EXPIRATION_TIME', 60));
+        $accessTokenExpirationDate  = now()->addMinutes((int)config('ACCESS_TOKEN_EXPIRATION_TIME', 60));
         $refreshTokenExpirationDate = now()->addMinutes((int)config('REFRESH_TOKEN_EXPIRATION_TIME', 43200));
 
-        $token = $user->createToken('access_token');
+        $token       = $user->createToken('access_token');
         $accessToken = $token->plainTextToken;
 
         $token->accessToken->forceFill([
@@ -85,7 +85,7 @@ final class SanctumAuthenticationAdapter implements AuthenticationServiceInterfa
         $refreshToken = hash('sha256', bin2hex(random_bytes(40)));
 
         $user->refreshTokens()->create([
-            'token' =>  $refreshToken,
+            'token'      => $refreshToken,
             'expires_at' => $refreshTokenExpirationDate,
             'created_at' => now(),
         ]);

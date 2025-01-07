@@ -25,11 +25,12 @@ return Application::configure(basePath: dirname(__DIR__))
                     Response::HTTP_BAD_REQUEST
                 );
             }
+
             if ($e instanceof InvalidRefreshTokenException) {
                 return response(
                     [
                         'message' => $e->getMessage(),
-                        'errors' => [
+                        'errors'  => [
                             'refresh_token' => [
                                 $e->getMessage(),
                             ],

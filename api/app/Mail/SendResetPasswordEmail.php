@@ -4,19 +4,18 @@ namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
-use Illuminate\Mail\Mailables\Content;
-use Illuminate\Mail\Mailables\Envelope;
+use Illuminate\Mail\Mailables\{Content, Envelope};
 use Illuminate\Queue\SerializesModels;
 
 class SendResetPasswordEmail extends Mailable
 {
-    use Queueable, SerializesModels;
+    use Queueable;
+    use SerializesModels;
 
     public function __construct(
         private string $userName,
         private string $token
-    )
-    {
+    ) {
         //
     }
 
@@ -33,7 +32,7 @@ class SendResetPasswordEmail extends Mailable
             markdown: 'mail.send-reset-password-email',
         )->with([
             'userName' => $this->userName,
-            'token' => $this->token
+            'token'    => $this->token,
         ]);
     }
 

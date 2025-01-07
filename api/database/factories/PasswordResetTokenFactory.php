@@ -18,9 +18,9 @@ class PasswordResetTokenFactory extends Factory
     public function definition(): array
     {
         return [
-            'token' => Str::random(100),
+            'token'      => Str::random(100),
             'created_at' => now(),
-            'expires_at' => now()->addMinutes(config('PASSWORD_RESET_TOKEN_EXPIRATION_TIME', 60))->toDateTime()
+            'expires_at' => now()->addMinutes(config('PASSWORD_RESET_TOKEN_EXPIRATION_TIME', 60))->toDateTime(),
         ];
     }
 }

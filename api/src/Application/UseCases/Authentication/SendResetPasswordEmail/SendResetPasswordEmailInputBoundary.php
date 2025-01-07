@@ -8,8 +8,7 @@ final class SendResetPasswordEmailInputBoundary
 {
     public function __construct(
         public Email $email
-    )
-    {
+    ) {
 
     }
 }

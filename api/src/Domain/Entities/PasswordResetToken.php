@@ -3,8 +3,7 @@
 namespace Src\Domain\Entities;
 
 use DateTime;
-use Src\Domain\Exceptions\DomainException;
-use Src\Domain\ValueObjects\{Email, Uuid};
+use Src\Domain\ValueObjects\{Email};
 
 final class PasswordResetToken
 {
