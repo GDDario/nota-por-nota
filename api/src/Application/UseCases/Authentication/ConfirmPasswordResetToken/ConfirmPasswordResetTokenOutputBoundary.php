@@ -4,10 +4,23 @@ namespace Src\Application\UseCases\Authentication\ConfirmPasswordResetToken;
 
 use Src\Domain\Enums\PasswordResetTokenStatusesEnum;
 
-final class ConfirmPasswordResetTokenOutputBoundary
+final readonly class ConfirmPasswordResetTokenOutputBoundary
 {
     public function __construct(
         public PasswordResetTokenStatusesEnum $status
-    ) {
+    )
+    {
+    }
+
+    public function handle(
+        ConfirmPasswordResetTokenInputBoundary $input
+    ): ConfirmPasswordResetTokenOutputBoundary
+    {
+
+        $status = $this->status;
+
+        return new ConfirmPasswordResetTokenOutputBoundary(
+            $this->status
+        );
     }
 }

@@ -163,4 +163,28 @@ describe('Reset password', function () {
             ]);
         });
     });
+
+    describe('Reset password', function() {
+        it('should reset the password and delete the token', function() {
+            Mail::fake();
+            User::factory()->create(['email' => 'john@doe.com']);
+            $token = Str::random(100);
+            PasswordResetToken::factory()->create([
+                'email' => 'john@doe.com',
+                'token' => $token,
+            ]);
+            $requestBody = [
+                'token' => $token,
+                'password' => 'password',
+                'password_confirmation' => 'password'
+            ];
+
+            $response = post(RESET_PASSWORD_BASE_URI . '/reset-password', $requestBody);
+
+            $response->assertStatus(200);
+            $response->assertJson(['message' => 'Password reseted successfully!']);
+            assertDatabaseCount('password_reset_tokens', 0);
+            Mail::assertNotSent(PasswordResetedEmail::class, 'john@doe.com');
+        });
+    });
 });

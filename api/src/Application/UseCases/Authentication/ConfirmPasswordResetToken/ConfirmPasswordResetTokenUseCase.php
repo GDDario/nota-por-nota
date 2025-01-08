@@ -5,7 +5,7 @@ namespace Src\Application\UseCases\Authentication\ConfirmPasswordResetToken;
 use Src\Domain\Enums\PasswordResetTokenStatusesEnum;
 use Src\Domain\Repositories\PasswordResetTokenRepositoryInterface;
 
-final class ConfirmPasswordResetTokenUseCase
+final readonly class ConfirmPasswordResetTokenUseCase
 {
     public function __construct(
         private PasswordResetTokenRepositoryInterface $tokenRepository,
