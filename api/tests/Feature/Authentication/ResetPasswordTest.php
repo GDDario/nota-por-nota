@@ -151,10 +151,10 @@ describe('Reset password', function () {
             $requestBody = [
             ];
 
-            $request = postJson(RESET_PASSWORD_BASE_URI . '/confirm-token', $requestBody);
+            $response = postJson(RESET_PASSWORD_BASE_URI . '/confirm-token', $requestBody);
 
-            $request->assertStatus(422);
-            $request->assertJson([
+            $response->assertStatus(422);
+            $response->assertJson([
                 'message' => 'The token field is required.',
                 'errors'  => [
                     'token' => [
@@ -185,6 +185,137 @@ describe('Reset password', function () {
             $response->assertJson(['message' => 'Password reset successfully!']);
             assertDatabaseCount('password_reset_tokens', 0);
             Mail::assertSent(PasswordHasBeenResetEmail::class, 'john@doe.com');
+        });
+
+        it('should not reset the password case the token is invalid', function() {
+            Mail::fake();
+            $token = Str::random(100);
+            PasswordResetToken::factory()->create([
+                'email' => 'john@doe.com',
+                'token' => $token,
+            ]);
+            $requestBody = [
+                'token' => 'Invalid token',
+                'password' => 'password',
+                'password_confirmation' => 'password'
+            ];
+
+            $response = post(RESET_PASSWORD_BASE_URI, $requestBody);
+
+            $response->assertStatus(400);
+            $response->assertJson([
+                'message' => 'Invalid token provided.',
+                'error' => 'Invalid or already used token.'
+            ]);
+            assertDatabaseCount('password_reset_tokens', 1);
+            Mail::assertNotSent(PasswordHasBeenResetEmail::class, 'john@doe.com');
+        });
+
+        it('should not reset the password case the token has already expired', function() {
+            Mail::fake();
+            $token = Str::random(100);
+            PasswordResetToken::factory()->create([
+                'email' => 'john@doe.com',
+                'token' => $token,
+                'expires_at' => now()->subMinute()
+            ]);
+            $requestBody = [
+                'token' => $token,
+                'password' => 'password',
+                'password_confirmation' => 'password'
+            ];
+
+            $response = post(RESET_PASSWORD_BASE_URI, $requestBody);
+
+            $response->assertStatus(400);
+            $response->assertJson([
+                'message' => 'Invalid token provided.',
+                'error' => 'Token already expired.'
+            ]);
+            assertDatabaseCount('password_reset_tokens', 1);
+            Mail::assertNotSent(PasswordHasBeenResetEmail::class, 'john@doe.com');
+        });
+
+        it('should not reset the password case the token field is not provided', function() {
+            Mail::fake();
+            $token = Str::random(100);
+            PasswordResetToken::factory()->create([
+                'email' => 'john@doe.com',
+                'token' => $token
+            ]);
+            $requestBody = [
+                'password' => 'password',
+                'password_confirmation' => 'password'
+            ];
+
+            $response = postJson(RESET_PASSWORD_BASE_URI, $requestBody);
+
+            $response->assertStatus(422);
+            $response->assertJson([
+                'message' => 'The token field is required.',
+                'errors'  => [
+                    'token' => [
+                        'The token field is required.',
+                    ],
+                ],
+            ]);
+            assertDatabaseCount('password_reset_tokens', 1);
+            Mail::assertNotSent(PasswordHasBeenResetEmail::class, 'john@doe.com');
+        });
+
+        it('should not reset the password case the password field is not provided', function() {
+            Mail::fake();
+            $token = Str::random(100);
+            PasswordResetToken::factory()->create([
+                'email' => 'john@doe.com',
+                'token' => $token
+            ]);
+            $requestBody = [
+                'token' => $token,
+                'password_confirmation' => 'password'
+            ];
+
+            $response = postJson(RESET_PASSWORD_BASE_URI, $requestBody);
+
+            $response->assertStatus(422);
+            $response->assertJson([
+                'message' => 'The password field is required.',
+                'errors'  => [
+                    'password' => [
+                        'The password field is required.',
+                    ],
+                ],
+            ]);
+            assertDatabaseCount('password_reset_tokens', 1);
+            Mail::assertNotSent(PasswordHasBeenResetEmail::class, 'john@doe.com');
+        });
+
+        it('should not reset the password case the passwords do not match', function() {
+            Mail::fake();
+            $token = Str::random(100);
+            PasswordResetToken::factory()->create([
+                'email' => 'john@doe.com',
+                'token' => $token
+            ]);
+            $requestBody = [
+                'token' => $token,
+                'password' => 'password',
+                'password_confirmation' => 'wrong match'
+            ];
+
+            $response = postJson(RESET_PASSWORD_BASE_URI, $requestBody);
+
+            $response->assertStatus(422);
+            $response->assertJson([
+                'message' => 'The password field confirmation does not match.',
+                'errors'  => [
+                    'password' => [
+                        'The password field confirmation does not match.',
+                    ],
+                ],
+            ]);
+            assertDatabaseCount('password_reset_tokens', 1);
+            Mail::assertNotSent(PasswordHasBeenResetEmail::class, 'john@doe.com');
         });
     });
 });
