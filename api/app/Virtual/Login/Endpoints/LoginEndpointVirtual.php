@@ -35,7 +35,7 @@ namespace App\Virtual\Login\Endpoints;
  *                  schema=@OA\Schema(
  *                      oneOf={
  *                          @OA\Schema(ref="#/components/schemas/EmailFieldRequiredResponseVirtual"),
- *                          @OA\Schema(ref="#/components/schemas/InvalidEmailResponseVirtual"),
+ *                          @OA\Schema(ref="#/components/schemas/InvalidEmailFormatResponseVirtual"),
  *                          @OA\Schema(ref="#/components/schemas/PasswordFieldRequiredResponseVirtual")
  *                      }
  *                  )

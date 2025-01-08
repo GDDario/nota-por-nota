@@ -99,7 +99,7 @@
                                             "$ref": "#/components/schemas/EmailFieldRequiredResponseVirtual"
                                         },
                                         {
-                                            "$ref": "#/components/schemas/InvalidEmailResponseVirtual"
+                                            "$ref": "#/components/schemas/InvalidEmailFormatResponseVirtual"
                                         },
                                         {
                                             "$ref": "#/components/schemas/PasswordFieldRequiredResponseVirtual"
@@ -263,6 +263,56 @@
                     }
                 }
             }
+        },
+        "reset-password/verify-email": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Verify Email for Password Reset",
+                "description": "Send a verification link to the provided email address to initiate the password reset process.",
+                "operationId": "verifyEmailForResetPassword",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/VerifyEmailRequestVirtual"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Verification email sent successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/VerifyEmailSuccessResponseVirtual"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation errors",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "schema": "VerifyEmailForPasswordResetEndpointVirtual",
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/InvalidEmailFormatResponseVirtual"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/EmailFieldRequiredResponseVirtual"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "components": {
@@ -317,6 +367,60 @@
                 },
                 "type": "object"
             },
+            "EmailFieldRequiredResponseVirtual": {
+                "title": "Email Field Required Response",
+                "description": "Response for missing email field",
+                "properties": {
+                    "message": {
+                        "title": "Message",
+                        "description": "Error message",
+                        "type": "string",
+                        "example": "The email field is required."
+                    },
+                    "errors": {
+                        "title": "Errors",
+                        "description": "Validation errors",
+                        "properties": {
+                            "email": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "example": "The email field is required."
+                                }
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "InvalidEmailFormatResponseVirtual": {
+                "title": "Invalid Email Format Response",
+                "description": "Response for invalid email format",
+                "properties": {
+                    "message": {
+                        "title": "Message",
+                        "description": "Error message",
+                        "type": "string",
+                        "example": "The email field must be a valid email address."
+                    },
+                    "errors": {
+                        "title": "Errors",
+                        "description": "Validation errors",
+                        "properties": {
+                            "email": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "example": "The email field must be a valid email address."
+                                }
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
             "UnauthenticatedResponseVirtual": {
                 "title": "Unauthenticated Response",
                 "description": "Error response for unauthenticated requests",
@@ -336,7 +440,7 @@
                         "$ref": "#/components/schemas/EmailFieldRequiredResponseVirtual"
                     },
                     {
-                        "$ref": "#/components/schemas/InvalidEmailResponseVirtual"
+                        "$ref": "#/components/schemas/InvalidEmailFormatResponseVirtual"
                     },
                     {
                         "$ref": "#/components/schemas/PasswordFieldRequiredResponseVirtual"
@@ -366,33 +470,6 @@
                 },
                 "type": "object"
             },
-            "EmailFieldRequiredResponseVirtual": {
-                "title": "Email Field Required Response",
-                "description": "Response returned when the email field is missing.",
-                "properties": {
-                    "message": {
-                        "title": "Message",
-                        "description": "Error message",
-                        "type": "string",
-                        "example": "The email field is required."
-                    },
-                    "errors": {
-                        "title": "Errors",
-                        "description": "Detailed validation errors",
-                        "properties": {
-                            "email": {
-                                "type": "array",
-                                "items": {
-                                    "type": "string",
-                                    "example": "The email field is required."
-                                }
-                            }
-                        },
-                        "type": "object"
-                    }
-                },
-                "type": "object"
-            },
             "InvalidCredentialsResponseVirtual": {
                 "title": "Invalid Credentials Response",
                 "description": "Response returned when invalid credentials are provided.",
@@ -402,33 +479,6 @@
                         "description": "Error message",
                         "type": "string",
                         "example": "Invalid credentials provided."
-                    }
-                },
-                "type": "object"
-            },
-            "InvalidEmailResponseVirtual": {
-                "title": "Invalid Email Response",
-                "description": "Response returned when the selected email is invalid.",
-                "properties": {
-                    "message": {
-                        "title": "Message",
-                        "description": "Error message",
-                        "type": "string",
-                        "example": "The selected email is invalid."
-                    },
-                    "errors": {
-                        "title": "Errors",
-                        "description": "Detailed validation errors",
-                        "properties": {
-                            "email": {
-                                "type": "array",
-                                "items": {
-                                    "type": "string",
-                                    "example": "The selected email is invalid."
-                                }
-                            }
-                        },
-                        "type": "object"
                     }
                 },
                 "type": "object"
@@ -829,7 +879,7 @@
                             "email": {
                                 "description": "User email",
                                 "type": "object",
-                                "example": "jhon@doe2.com"
+                                "example": "jhon@doe.com"
                             },
                             "username": {
                                 "description": "User username",
@@ -911,6 +961,45 @@
                             }
                         },
                         "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "VerifyEmailForPasswordResetEndpointVirtual": {
+                "oneOf": [
+                    {
+                        "$ref": "#/components/schemas/InvalidEmailFormatResponseVirtual"
+                    },
+                    {
+                        "$ref": "#/components/schemas/EmailFieldRequiredResponseVirtual"
+                    }
+                ]
+            },
+            "VerifyEmailRequestVirtual": {
+                "title": "Verify Email Request",
+                "description": "Request body for verifying email for password reset",
+                "required": [
+                    "email"
+                ],
+                "properties": {
+                    "email": {
+                        "title": "Email",
+                        "description": "Email address of the user requesting password reset",
+                        "type": "string",
+                        "example": "john@doe.com"
+                    }
+                },
+                "type": "object"
+            },
+            "VerifyEmailSuccessResponseVirtual": {
+                "title": "Verify Email Success Response",
+                "description": "Response when the email verification link is sent successfully",
+                "properties": {
+                    "message": {
+                        "title": "Message",
+                        "description": "Success message",
+                        "type": "string",
+                        "example": "If the email exists, we will send a verification link to you continue the reset process."
                     }
                 },
                 "type": "object"
