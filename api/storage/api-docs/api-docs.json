@@ -264,6 +264,59 @@
                 }
             }
         },
+        "reset-password/confirm-token": {
+            "post": {
+                "tags": [
+                    "Password Reset"
+                ],
+                "summary": "Confirm Reset Token",
+                "description": "Confirm the provided token for resetting the password.",
+                "operationId": "confirmResetToken",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ConfirmResetTokenRequestVirtual"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Token confirmed successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ConfirmResetTokenSuccessResponseVirtual"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation errors",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "schema": "ConfirmResetTokenEndpointVirtual",
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/InvalidResetTokenResponseVirtual"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/ExpiredResetTokenResponseVirtual"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/TokenFieldRequiredResponseVirtual"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "reset-password/verify-email": {
             "post": {
                 "tags": [
@@ -413,6 +466,33 @@
                                 "items": {
                                     "type": "string",
                                     "example": "The email field must be a valid email address."
+                                }
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "TokenFieldRequiredResponseVirtual": {
+                "title": "Token Field Required Response",
+                "description": "Response when the token field is missing",
+                "properties": {
+                    "message": {
+                        "title": "Message",
+                        "description": "Error message",
+                        "type": "string",
+                        "example": "The token field is required."
+                    },
+                    "errors": {
+                        "title": "Errors",
+                        "description": "Validation errors",
+                        "properties": {
+                            "token": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "example": "The token field is required."
                                 }
                             }
                         },
@@ -965,6 +1045,19 @@
                 },
                 "type": "object"
             },
+            "ConfirmResetTokenEndpointVirtual": {
+                "oneOf": [
+                    {
+                        "$ref": "#/components/schemas/InvalidResetTokenResponseVirtual"
+                    },
+                    {
+                        "$ref": "#/components/schemas/ExpiredResetTokenResponseVirtual"
+                    },
+                    {
+                        "$ref": "#/components/schemas/TokenFieldRequiredResponseVirtual"
+                    }
+                ]
+            },
             "VerifyEmailForPasswordResetEndpointVirtual": {
                 "oneOf": [
                     {
@@ -974,6 +1067,22 @@
                         "$ref": "#/components/schemas/EmailFieldRequiredResponseVirtual"
                     }
                 ]
+            },
+            "ConfirmResetTokenRequestVirtual": {
+                "title": "Confirm Reset Token Request",
+                "description": "Request body for confirming the reset password token",
+                "required": [
+                    "token"
+                ],
+                "properties": {
+                    "token": {
+                        "title": "Token",
+                        "description": "The token provided to confirm password reset",
+                        "type": "string",
+                        "example": "Gb3I0Oqmbpohr6Pg81EzK8VQQxguRLhM4gWzk7v6bGot5OEk4yqMvjgwu5CPaiLE7tm3D5Gw852zf4SlO0GBrc11jm1242rtO4DO"
+                    }
+                },
+                "type": "object"
             },
             "VerifyEmailRequestVirtual": {
                 "title": "Verify Email Request",
@@ -987,6 +1096,57 @@
                         "description": "Email address of the user requesting password reset",
                         "type": "string",
                         "example": "john@doe.com"
+                    }
+                },
+                "type": "object"
+            },
+            "ConfirmResetTokenSuccessResponseVirtual": {
+                "title": "Confirm Reset Token Success Response",
+                "description": "Response when the reset password token is confirmed successfully",
+                "properties": {
+                    "message": {
+                        "title": "Message",
+                        "description": "Success message",
+                        "type": "string",
+                        "example": "Token confirmed successfully."
+                    }
+                },
+                "type": "object"
+            },
+            "ExpiredResetTokenResponseVirtual": {
+                "title": "Expired Reset Token Response",
+                "description": "Response when the reset password token is expired",
+                "properties": {
+                    "message": {
+                        "title": "Message",
+                        "description": "Error message",
+                        "type": "string",
+                        "example": "Invalid token provided."
+                    },
+                    "error": {
+                        "title": "Error",
+                        "description": "Detailed error message",
+                        "type": "string",
+                        "example": "Token already expired."
+                    }
+                },
+                "type": "object"
+            },
+            "InvalidResetTokenResponseVirtual": {
+                "title": "Invalid Reset Token Response",
+                "description": "Response when the reset password token is invalid or already used",
+                "properties": {
+                    "message": {
+                        "title": "Message",
+                        "description": "Error message",
+                        "type": "string",
+                        "example": "Invalid token provided."
+                    },
+                    "error": {
+                        "title": "Error",
+                        "description": "Detailed error message",
+                        "type": "string",
+                        "example": "Invalid or already used token."
                     }
                 },
                 "type": "object"
@@ -1010,6 +1170,10 @@
         {
             "name": "Authentication",
             "description": "Authentication"
+        },
+        {
+            "name": "Password Reset",
+            "description": "Password Reset"
         }
     ]
 }
