@@ -42,6 +42,20 @@ final class PasswordResetTokenEloquentRepository implements PasswordResetTokenRe
         return $this->hydrateEntity($newModel);
     }
 
+    public function deleteByToken(string $token): bool
+    {
+          if (!$model = $this->eloquentModel->query()->where('token', $token)->first()) {
+              return false;
+          }
+
+          return $model->delete();
+    }
+
+    public function existByToken(string $token): bool
+    {
+        return $this->eloquentModel->query()->where('token', $token)->exists();
+    }
+
     private function hydrateEntity(?PasswordResetTokenModel $model): ?PasswordResetToken
     {
         if ($model === null) {

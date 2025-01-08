@@ -3,7 +3,7 @@
 
 Click in the button to continue the password-reset steps.
 
-Attention: the code will expire in 1 hour.
+**Attention**: the code will expire in 1 hour.
 
 <x-mail::button :url="'{{$token}}'">
 Reset password

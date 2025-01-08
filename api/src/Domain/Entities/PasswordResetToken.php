@@ -17,6 +17,6 @@ final class PasswordResetToken
 
     public function isExpired(): bool
     {
-        return $this->createdAt > now();
+        return $this->expiresAt < now();
     }
 }

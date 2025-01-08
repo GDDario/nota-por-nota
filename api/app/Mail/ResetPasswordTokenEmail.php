@@ -7,7 +7,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\{Content, Envelope};
 use Illuminate\Queue\SerializesModels;
 
-class SendResetPasswordEmail extends Mailable
+class ResetPasswordTokenEmail extends Mailable
 {
     use Queueable;
     use SerializesModels;
@@ -22,14 +22,14 @@ class SendResetPasswordEmail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Send Reset Password Email',
+            subject: 'Reset password request',
         );
     }
 
     public function content(): Content
     {
         return new Content(
-            markdown: 'mail.send-reset-password-email',
+            markdown: 'mail.reset-password-token-email',
         )->with([
             'userName' => $this->userName,
             'token'    => $this->token,

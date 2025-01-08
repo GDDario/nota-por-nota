@@ -10,6 +10,7 @@ use Src\Application\UseCases\Authentication\ConfirmPasswordResetToken\{ConfirmPa
 use Src\Application\UseCases\Authentication\SendResetPasswordEmail\{SendResetPasswordEmailInputBoundary,
     SendResetPasswordEmailUseCase
 };
+use Src\Application\UseCases\Authentication\ResetPassword\ResetPasswordInputBoundary;
 use Src\Application\UseCases\Authentication\ResetPassword\ResetPasswordUseCase;
 use Src\Domain\Enums\PasswordResetTokenStatusesEnum;
 use Src\Domain\ValueObjects\Email;

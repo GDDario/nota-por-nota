@@ -1,6 +1,7 @@
 <?php
 
-use App\Mail\SendResetPasswordEmail;
+use App\Mail\PasswordHasBeenResetEmail;
+use App\Mail\ResetPasswordTokenEmail;
 use App\Models\{PasswordResetToken, User};
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
@@ -31,7 +32,7 @@ describe('Reset password', function () {
                 'message' => 'If the email exists, we will send a verification link to you continue the reset process.',
             ]);
             assertDatabaseCount('password_reset_tokens', 1);
-            Mail::assertSent(SendResetPasswordEmail::class, 'john@doe.com');
+            Mail::assertSent(ResetPasswordTokenEmail::class, 'john@doe.com');
         });
 
         it('should not send the confirmation email case the email does not exists and show the success message anyway', function () {
@@ -48,7 +49,7 @@ describe('Reset password', function () {
                 'message' => 'If the email exists, we will send a verification link to you continue the reset process.',
             ]);
             assertDatabaseCount('password_reset_tokens', 0);
-            Mail::assertNotSent(SendResetPasswordEmail::class, 'john@doe.com');
+            Mail::assertNotSent(ResetPasswordTokenEmail::class, 'john@doe.com');
         });
 
         it('should show an error message case the email is not provided', function () {
@@ -167,7 +168,6 @@ describe('Reset password', function () {
     describe('Reset password', function() {
         it('should reset the password and delete the token', function() {
             Mail::fake();
-            User::factory()->create(['email' => 'john@doe.com']);
             $token = Str::random(100);
             PasswordResetToken::factory()->create([
                 'email' => 'john@doe.com',
@@ -179,12 +179,12 @@ describe('Reset password', function () {
                 'password_confirmation' => 'password'
             ];
 
-            $response = post(RESET_PASSWORD_BASE_URI . '/reset-password', $requestBody);
+            $response = post(RESET_PASSWORD_BASE_URI, $requestBody);
 
             $response->assertStatus(200);
-            $response->assertJson(['message' => 'Password reseted successfully!']);
+            $response->assertJson(['message' => 'Password reset successfully!']);
             assertDatabaseCount('password_reset_tokens', 0);
-            Mail::assertNotSent(PasswordResetedEmail::class, 'john@doe.com');
+            Mail::assertSent(PasswordHasBeenResetEmail::class, 'john@doe.com');
         });
     });
 });

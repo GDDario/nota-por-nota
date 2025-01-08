@@ -2,7 +2,7 @@
 
 namespace Src\Application\UseCases\Authentication\SendResetPasswordEmail;
 
-use App\Mail\SendResetPasswordEmail;
+use App\Mail\ResetPasswordTokenEmail;
 use Illuminate\Support\Str;
 use Src\Application\Interfaces\EmailServiceInterface;
 use Src\Domain\Repositories\{PasswordResetTokenRepositoryInterface, UserRepositoryInterface};
@@ -23,7 +23,7 @@ final class SendResetPasswordEmailUseCase
 
         if ($user != null) {
             $token    = $this->generateToken();
-            $mailable = new SendResetPasswordEmail($user->name, $token);
+            $mailable = new ResetPasswordTokenEmail($user->name, $token);
             $this->emailService->sendMailable($input->email, $mailable);
             $this->passwordResetTokenRepository->create($input->email, $token);
         }

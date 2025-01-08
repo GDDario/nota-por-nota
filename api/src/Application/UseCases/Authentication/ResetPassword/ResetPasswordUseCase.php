@@ -2,44 +2,49 @@
 
 namespace Src\Application\UseCases\Authentication\ResetPassword;
 
+use App\Mail\PasswordHasBeenResetEmail;
 use Illuminate\Auth\Notifications\ResetPassword;
+use Illuminate\Support\Facades\Password;
 use InvalidArgumentException;
 use Src\Application\Interfaces\EmailServiceInterface;
 use Src\Domain\Enums\PasswordResetTokenStatusesEnum;
 use Src\Domain\Repositories\PasswordResetTokenRepositoryInterface;
 use Src\Domain\Repositories\UserRepositoryInterface;
 
-final class ResetPasswordUseCase
+final readonly class ResetPasswordUseCase
 {
     public function __construct(
-        private readonly PasswordResetTokenRepositoryInterface $tokenRepository,
-        private readonly UserRepositoryInterface               $userRepository,
-        private readonly EmailServiceInterface                 $emailService
-    )
-    {
+        private PasswordResetTokenRepositoryInterface $tokenRepository,
+        private UserRepositoryInterface               $userRepository,
+        private EmailServiceInterface                 $emailService
+    ) {
     }
 
     public function handle(
         ResetPasswordInputBoundary $input
     ): ResetPasswordOutputBoundary
     {
-        if ($input->password !== $input->passwordConfirmation) {
-            throw new InvalidArgumentException('The passwords do not match');
-        }
-
-
-        $token = $this->tokenRepository->existsByToken($input->token);
+        $token = $this->tokenRepository->findByToken($input->token);
 
         if ($token) {
-            $this->tokenRepository->deleteById($token->id);
+            if ($token->isExpired()) {
+                $tokenStatus = PasswordResetTokenStatusesEnum::EXPIRED;
+            } else {
+                $this->tokenRepository->deleteByToken($input->token);
 
-            $this->userRepository->updatePassword($input->password);
+                $user = $this->userRepository->updatePassword($token->email, $input->password);
 
-            $tokenStatus = PasswordResetTokenStatusesEnum::CONFIRMED;
+                $tokenStatus = PasswordResetTokenStatusesEnum::CONFIRMED;
+                $mailable = new PasswordHasBeenResetEmail($user->name);
+                $this->emailService->sendMailable($token->email, $mailable);
+            }
         } else {
-
+            $tokenStatus = PasswordResetTokenStatusesEnum::INVALID;
         }
 
-        return new ResetPasswordOutputBoundary();
+        return new ResetPasswordOutputBoundary(
+            success: $tokenStatus === PasswordResetTokenStatusesEnum::CONFIRMED,
+            tokenStatus: $tokenStatus
+        );
     }
 }

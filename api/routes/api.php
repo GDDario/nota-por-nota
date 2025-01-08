@@ -21,6 +21,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 Route::prefix('reset-password')->group(function () {
     Route::post('send-email', [ResetPasswordController::class, 'sendEmail']);
     Route::post('confirm-token', [ResetPasswordController::class, 'confirmToken']);
+    Route::post('', [ResetPasswordController::class, 'resetPassword']);
 });
 
 // Route::get('/user', function (Request $request) {
