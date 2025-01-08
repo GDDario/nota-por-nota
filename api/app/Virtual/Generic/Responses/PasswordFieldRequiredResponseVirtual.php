@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Virtual\Login\Responses;
+namespace App\Virtual\Generic\Responses;
 
 /**
  * @OA\Schema(

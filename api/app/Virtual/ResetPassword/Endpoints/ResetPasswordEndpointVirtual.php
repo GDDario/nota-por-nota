@@ -4,19 +4,19 @@ namespace App\Virtual\ResetPassword\Endpoints;
 
 /**
  * @OA\Post(
- *     path="reset-password/confirm-token",
- *     operationId="confirmResetToken",
+ *     path="reset-password",
+ *     operationId="resetPassword",
  *     tags={"Authentication"},
- *     summary="Confirm Reset Token",
- *     description="Confirm the provided token for resetting the password.",
+ *     summary="Reset Password",
+ *     description="Reset the user password with a valid token.",
  *     @OA\RequestBody(
  *         required=true,
- *         @OA\JsonContent(ref="#/components/schemas/ConfirmResetTokenRequestVirtual")
+ *         @OA\JsonContent(ref="#/components/schemas/ResetPasswordRequestVirtual")
  *     ),
  *     @OA\Response(
  *         response=200,
- *         description="Token confirmed successfully",
- *         @OA\JsonContent(ref="#/components/schemas/ConfirmResetTokenSuccessResponseVirtual")
+ *         description="Password reset successfully",
+ *         @OA\JsonContent(ref="#/components/schemas/ResetPasswordSuccessResponseVirtual")
  *     ),
  *     @OA\Response(
  *         response=422,
@@ -28,7 +28,9 @@ namespace App\Virtual\ResetPassword\Endpoints;
  *                     oneOf={
  *                         @OA\Schema(ref="#/components/schemas/InvalidResetTokenResponseVirtual"),
  *                         @OA\Schema(ref="#/components/schemas/ExpiredResetTokenResponseVirtual"),
- *                         @OA\Schema(ref="#/components/schemas/TokenFieldRequiredResponseVirtual")
+ *                         @OA\Schema(ref="#/components/schemas/TokenFieldRequiredResponseVirtual"),
+ *                         @OA\Schema(ref="#/components/schemas/PasswordFieldRequiredResponseVirtual"),
+ *                         @OA\Schema(ref="#/components/schemas/PasswordConfirmationMismatchResponseVirtual")
  *                     }
  *                 )
  *             )
@@ -36,6 +38,6 @@ namespace App\Virtual\ResetPassword\Endpoints;
  *     )
  * )
  */
-class ConfirmResetTokenEndpointVirtual
+class ResetPasswordEndpointVirtual
 {
 }
