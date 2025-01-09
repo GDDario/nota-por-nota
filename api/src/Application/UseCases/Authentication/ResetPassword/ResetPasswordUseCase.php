@@ -7,7 +7,7 @@ use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Support\Facades\Password;
 use InvalidArgumentException;
 use Src\Application\Interfaces\EmailServiceInterface;
-use Src\Domain\Enums\PasswordResetTokenStatusesEnum;
+use Src\Domain\Enums\GenericExpirableTokenStatusesEnum;
 use Src\Domain\Repositories\PasswordResetTokenRepositoryInterface;
 use Src\Domain\Repositories\UserRepositoryInterface;
 
@@ -28,22 +28,22 @@ final readonly class ResetPasswordUseCase
 
         if ($token) {
             if ($token->isExpired()) {
-                $tokenStatus = PasswordResetTokenStatusesEnum::EXPIRED;
+                $tokenStatus = GenericExpirableTokenStatusesEnum::EXPIRED;
             } else {
                 $this->tokenRepository->deleteByToken($input->token);
 
                 $user = $this->userRepository->updatePassword($token->email, $input->password);
 
-                $tokenStatus = PasswordResetTokenStatusesEnum::CONFIRMED;
+                $tokenStatus = GenericExpirableTokenStatusesEnum::CONFIRMED;
                 $mailable = new PasswordHasBeenResetEmail($user->name);
                 $this->emailService->sendMailable($token->email, $mailable);
             }
         } else {
-            $tokenStatus = PasswordResetTokenStatusesEnum::INVALID;
+            $tokenStatus = GenericExpirableTokenStatusesEnum::INVALID;
         }
 
         return new ResetPasswordOutputBoundary(
-            success: $tokenStatus === PasswordResetTokenStatusesEnum::CONFIRMED,
+            success: $tokenStatus === GenericExpirableTokenStatusesEnum::CONFIRMED,
             tokenStatus: $tokenStatus
         );
     }

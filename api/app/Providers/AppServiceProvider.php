@@ -4,9 +4,13 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Src\Application\Interfaces\EmailServiceInterface;
-use Src\Domain\Repositories\{PasswordResetTokenRepositoryInterface, UserRepositoryInterface};
+use Src\Domain\Repositories\{EmailUpdateTokenRepositoryInterface,
+    PasswordResetTokenRepositoryInterface,
+    UserRepositoryInterface};
 use Src\Domain\Services\AuthenticationServiceInterface;
-use Src\Infrastructure\Repositories\{PasswordResetTokenEloquentRepository, UserEloquentRepository};
+use Src\Infrastructure\Repositories\{EmailUpdateTokenEloquentRepository,
+    PasswordResetTokenEloquentRepository,
+    UserEloquentRepository};
 use Src\InterfaceAdapters\Services\{SanctumAuthenticationAdapter, SmtpEmailService};
 
 class AppServiceProvider extends ServiceProvider
@@ -38,6 +42,11 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(
             PasswordResetTokenRepositoryInterface::class,
             PasswordResetTokenEloquentRepository::class
+        );
+
+        $this->app->singleton(
+            EmailUpdateTokenRepositoryInterface::class,
+            EmailUpdateTokenEloquentRepository::class
         );
     }
 

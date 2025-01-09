@@ -1,12 +1,12 @@
 meta {
-  name: Verify email
+  name: Send verification link
   type: http
   seq: 1
 }
 
 post {
-  url: {{url}}/reset-password/send-email
-  body: json
+  url: {{url}}/user/update-email/send-verification-link
+  body: none
   auth: bearer
 }
 

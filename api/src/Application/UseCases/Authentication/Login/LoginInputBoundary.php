@@ -7,8 +7,9 @@ use Src\Domain\ValueObjects\Email;
 final class LoginInputBoundary
 {
     public function __construct(
-        public Email $email,
+        public Email  $email,
         public string $password
-    ) {
+    )
+    {
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Src\Application\UseCases\Authentication\ConfirmPasswordResetToken;
 
-use Src\Domain\Enums\PasswordResetTokenStatusesEnum;
+use Src\Domain\Enums\GenericExpirableTokenStatusesEnum;
 use Src\Domain\Repositories\PasswordResetTokenRepositoryInterface;
 
 final readonly class ConfirmPasswordResetTokenUseCase
@@ -17,12 +17,12 @@ final readonly class ConfirmPasswordResetTokenUseCase
         ConfirmPasswordResetTokenInputBoundary $input
     ): ConfirmPasswordResetTokenOutputBoundary {
         $token  = $this->tokenRepository->findByToken($input->token);
-        $status = PasswordResetTokenStatusesEnum::CONFIRMED;
+        $status = GenericExpirableTokenStatusesEnum::CONFIRMED;
 
         if (!$token) {
-            $status = PasswordResetTokenStatusesEnum::INVALID;
+            $status = GenericExpirableTokenStatusesEnum::INVALID;
         } else if ($token->expiresAt < now()) {
-            $status = PasswordResetTokenStatusesEnum::EXPIRED;
+            $status = GenericExpirableTokenStatusesEnum::EXPIRED;
         }
 
         return new ConfirmPasswordResetTokenOutputBoundary(

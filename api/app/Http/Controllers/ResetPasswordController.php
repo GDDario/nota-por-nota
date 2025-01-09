@@ -12,7 +12,7 @@ use Src\Application\UseCases\Authentication\SendResetPasswordEmail\{SendResetPas
 };
 use Src\Application\UseCases\Authentication\ResetPassword\ResetPasswordInputBoundary;
 use Src\Application\UseCases\Authentication\ResetPassword\ResetPasswordUseCase;
-use Src\Domain\Enums\PasswordResetTokenStatusesEnum;
+use Src\Domain\Enums\GenericExpirableTokenStatusesEnum;
 use Src\Domain\ValueObjects\Email;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
@@ -29,9 +29,9 @@ class ResetPasswordController extends Controller
             )
         );
 
-        if ($response->status === PasswordResetTokenStatusesEnum::CONFIRMED) {
+        if ($response->status === GenericExpirableTokenStatusesEnum::CONFIRMED) {
             return new Response(['message' => 'Token confirmed successfully.'], SymfonyResponse::HTTP_OK);
-        } else if ($response->status === PasswordResetTokenStatusesEnum::EXPIRED) {
+        } else if ($response->status === GenericExpirableTokenStatusesEnum::EXPIRED) {
             return new Response([
                 'message' => 'Invalid token provided.',
                 'error' => 'Token already expired.',
@@ -55,13 +55,16 @@ class ResetPasswordController extends Controller
             )
         );
 
-        return new Response(['message' => 'If the email exists, we will send a verification link to you continue the reset process.'], SymfonyResponse::HTTP_OK);
+        return new Response(
+            ['message' => 'If the email exists, we will send a verification link to you continue the reset process.'],
+            SymfonyResponse::HTTP_OK);
     }
 
     public function resetPassword(
         ResetPasswordRequest $request,
         ResetPasswordUseCase $useCase
-    ): Response {
+    ): Response
+    {
         $response = $useCase->handle(
             new ResetPasswordInputBoundary(
                 token: $request->get('token'),
@@ -77,11 +80,11 @@ class ResetPasswordController extends Controller
         }
 
         return match ($response->tokenStatus) {
-            PasswordResetTokenStatusesEnum::EXPIRED => new Response([
+            GenericExpirableTokenStatusesEnum::EXPIRED => new Response([
                 'message' => 'Invalid token provided.',
                 'error' => 'Token already expired.',
             ], SymfonyResponse::HTTP_BAD_REQUEST),
-            PasswordResetTokenStatusesEnum::INVALID => new Response([
+            GenericExpirableTokenStatusesEnum::INVALID => new Response([
                 'message' => 'Invalid token provided.',
                 'error' => 'Invalid or already used token.',
             ], SymfonyResponse::HTTP_BAD_REQUEST),

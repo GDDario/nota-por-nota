@@ -2,7 +2,7 @@
 
 namespace Src\Domain\Enums;
 
-enum PasswordResetTokenStatusesEnum: int
+enum GenericExpirableTokenStatusesEnum: int
 {
     case CONFIRMED = 1;
     case EXPIRED   = 2;
