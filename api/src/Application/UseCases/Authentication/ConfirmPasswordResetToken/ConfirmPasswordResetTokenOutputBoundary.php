@@ -11,16 +11,4 @@ final readonly class ConfirmPasswordResetTokenOutputBoundary
     )
     {
     }
-
-    public function handle(
-        ConfirmPasswordResetTokenInputBoundary $input
-    ): ConfirmPasswordResetTokenOutputBoundary
-    {
-
-        $status = $this->status;
-
-        return new ConfirmPasswordResetTokenOutputBoundary(
-            $this->status
-        );
-    }
 }
