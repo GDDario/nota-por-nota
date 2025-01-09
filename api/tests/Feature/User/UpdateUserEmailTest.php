@@ -34,5 +34,15 @@ describe('Update user email', function () {
             Mail::assertSent(UpdateUserEmailVerification::class, 'john@doe.com');
             assertDatabaseCount('email_update_tokens', 1);
         });
+
+        it('should not send the verification link case the user is not logged do not exist', function() {
+            Mail::fake();
+
+            $response = postJson(UPDATE_USER_EMAIL_BASE_URI . '/send-verification-link');
+
+            $response->assertStatus(401);
+            $response->assertJson(['message' => 'Unauthenticated.']);
+            Mail::assertNotSent('email_update_tokens');
+        });
     });
 });
