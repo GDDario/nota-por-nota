@@ -426,6 +426,65 @@
                 }
             }
         },
+        "user/update-email/confirm-token": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Confirm Email Update Token",
+                "description": "Validates the token for confirming an email update.",
+                "operationId": "confirmEmailUpdateToken",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ConfirmEmailTokenRequestVirtual"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Token confirmed successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ConfirmEmailTokenSuccessResponseVirtual"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Token errors",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/InvalidTokenResponseVirtual"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/ExpiredTokenResponseVirtual"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation errors",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TokenFieldRequiredResponseVirtual"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/user/update-email/send-verification-link": {
             "post": {
                 "tags": [
@@ -1349,9 +1408,76 @@
                 },
                 "type": "object"
             },
+            "ConfirmEmailTokenRequestVirtual": {
+                "title": "Confirm Email Token Request",
+                "description": "Request body for confirming email token",
+                "required": [
+                    "token"
+                ],
+                "properties": {
+                    "token": {
+                        "title": "Token",
+                        "description": "The token to confirm the email update",
+                        "type": "string",
+                        "example": "9E8YWlQionBHFAr4M27q5SpzWwyXANWdLbbmlugLI9L6ooxQ3HCPvaLoNtNYomB78gnGokmJr5UuytNs21w3CRimWakDtBnY6pAM"
+                    }
+                },
+                "type": "object"
+            },
             "SendVerificationLinkRequestVirtual": {
                 "title": "Send Verification Link Request",
                 "description": "Request payload for sending email verification link",
+                "type": "object"
+            },
+            "ConfirmEmailTokenSuccessResponseVirtual": {
+                "title": "Confirm Email Token Success Response",
+                "description": "Response after successfully confirming the email token",
+                "properties": {
+                    "message": {
+                        "title": "Message",
+                        "description": "Success message",
+                        "type": "string",
+                        "example": "Token confirmed successfully."
+                    }
+                },
+                "type": "object"
+            },
+            "ExpiredTokenResponseVirtual": {
+                "title": "Expired Token Response",
+                "description": "Response when the provided token is expired",
+                "properties": {
+                    "message": {
+                        "title": "Message",
+                        "description": "Error message",
+                        "type": "string",
+                        "example": "Invalid token provided."
+                    },
+                    "error": {
+                        "title": "Error",
+                        "description": "Detailed error message",
+                        "type": "string",
+                        "example": "Token already expired."
+                    }
+                },
+                "type": "object"
+            },
+            "InvalidTokenResponseVirtual": {
+                "title": "Invalid Token Response",
+                "description": "Response when an invalid token is provided",
+                "properties": {
+                    "message": {
+                        "title": "Message",
+                        "description": "Error message",
+                        "type": "string",
+                        "example": "Invalid token provided."
+                    },
+                    "error": {
+                        "title": "Error",
+                        "description": "Detailed error message",
+                        "type": "string",
+                        "example": "Invalid or already used token."
+                    }
+                },
                 "type": "object"
             },
             "SendVerificationLinkSuccessResponseVirtual": {
