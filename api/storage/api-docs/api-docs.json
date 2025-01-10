@@ -521,6 +521,72 @@
                     }
                 ]
             }
+        },
+        "user/update-email": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Update User Email",
+                "description": "Updates the user's email after validating the provided token.",
+                "operationId": "updateEmail",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateEmailRequestVirtual"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Email updated successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UpdateEmailSuccessResponseVirtual"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Token errors",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/InvalidTokenResponseVirtual"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/ExpiredTokenResponseVirtual"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation errors",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/EmailFieldRequiredResponseVirtual"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/EmailMatchErrorResponseVirtual"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "components": {
@@ -1429,6 +1495,38 @@
                 "description": "Request payload for sending email verification link",
                 "type": "object"
             },
+            "UpdateEmailRequestVirtual": {
+                "title": "UpdateEmailRequest",
+                "description": "Request body for updating email",
+                "required": [
+                    "token",
+                    "email",
+                    "email_confirmation"
+                ],
+                "properties": {
+                    "token": {
+                        "title": "Token",
+                        "description": "Token to validate email update",
+                        "type": "string",
+                        "example": "SFsWIVQbT8QDiXQyddIPRiYrj900EHpsPpnhGj3R6VmdtZMiV77GBQANaEHgH4hjl2k8kRgPdgE4MOGMoJAJlBQlOt45AJ7XhA3v"
+                    },
+                    "email": {
+                        "title": "Email",
+                        "description": "New email address",
+                        "type": "string",
+                        "format": "email",
+                        "example": "new_john@doe.com"
+                    },
+                    "email_confirmation": {
+                        "title": "Email Confirmation",
+                        "description": "Confirmation of the new email address",
+                        "type": "string",
+                        "format": "email",
+                        "example": "new_john@doe.com"
+                    }
+                },
+                "type": "object"
+            },
             "ConfirmEmailTokenSuccessResponseVirtual": {
                 "title": "Confirm Email Token Success Response",
                 "description": "Response after successfully confirming the email token",
@@ -1438,6 +1536,33 @@
                         "description": "Success message",
                         "type": "string",
                         "example": "Token confirmed successfully."
+                    }
+                },
+                "type": "object"
+            },
+            "EmailMatchErrorResponseVirtual": {
+                "title": "EmailMatchErrorResponse",
+                "description": "Response when email and confirmation do not match",
+                "properties": {
+                    "message": {
+                        "title": "Message",
+                        "description": "Error message",
+                        "type": "string",
+                        "example": "The email field confirmation does not match."
+                    },
+                    "errors": {
+                        "title": "Errors",
+                        "description": "Detailed errors",
+                        "properties": {
+                            "email": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "example": "The email field confirmation does not match."
+                                }
+                            }
+                        },
+                        "type": "object"
                     }
                 },
                 "type": "object"
@@ -1488,6 +1613,19 @@
                         "title": "Message",
                         "type": "string",
                         "example": "Email sent successfully. Check your inbox for further explanation."
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateEmailSuccessResponseVirtual": {
+                "title": "UpdateEmailSuccessResponse",
+                "description": "Response for successful email update",
+                "properties": {
+                    "message": {
+                        "title": "Message",
+                        "description": "Success message",
+                        "type": "string",
+                        "example": "Email updated successfully!"
                     }
                 },
                 "type": "object"
