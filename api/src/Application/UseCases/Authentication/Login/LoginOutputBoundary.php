@@ -15,6 +15,7 @@ final class LoginOutputBoundary
         public string $username,
         public DateTime $createdAt,
         public TokensDTO $tokenData,
+        public ?string $picture = null,
         public ?DateTime $updatedAt = null,
     ) {
     }

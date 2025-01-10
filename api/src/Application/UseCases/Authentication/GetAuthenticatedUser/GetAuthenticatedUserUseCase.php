@@ -21,6 +21,7 @@ final class GetAuthenticatedUserUseCase
             email: $user->email,
             username: $user->username,
             createdAt: $user->createdAt,
+            picture: $user->picture,
             updatedAt: $user->updatedAt
         );
     }

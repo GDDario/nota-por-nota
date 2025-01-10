@@ -77,6 +77,8 @@ describe('User', function () {
             new Email('john@doe.com'),
             'johndoe456',
             $createdAt,
+            null,
+            null,
             $updatedAt
         );
     })->throws(DomainException::class, 'The updatedAt date cannot be earlier than createdAt.');
@@ -92,6 +94,8 @@ describe('User', function () {
             new Email('john@doe.com'),
             'johndoe456',
             $createdAt,
+            null,
+            null,
             null,
             $deleteAt
         );

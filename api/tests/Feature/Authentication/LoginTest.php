@@ -38,6 +38,7 @@ describe('Login', function () {
                     'name',
                     'email',
                     'username',
+                    'picture',
                     'created_at',
                     'updated_at',
                 ],

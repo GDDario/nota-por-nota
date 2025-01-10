@@ -29,6 +29,7 @@ class LoginController
                     'name'       => $response->name,
                     'email'      => (string) $response->email,
                     'username'   => $response->username,
+                    'picture'    => $response->picture,
                     'created_at' => $response->createdAt,
                     'updated_at' => $response->updatedAt,
                 ],

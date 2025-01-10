@@ -26,6 +26,8 @@ class User extends Authenticatable
         'uuid',
         'name',
         'username',
+        'picture',
+        'original_picture',
         'email',
         'password',
     ];

@@ -19,6 +19,8 @@ return new class () extends Migration {
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
+            $table->string('picture')->nullable();
+            $table->string('original_picture')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

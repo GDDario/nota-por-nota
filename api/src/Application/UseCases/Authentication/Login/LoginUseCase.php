@@ -33,6 +33,7 @@ final class LoginUseCase
             username: $user->username,
             createdAt: $user->createdAt,
             tokenData: $tokenData,
+            picture: $user->picture,
             updatedAt: $user->updatedAt
         );
     }

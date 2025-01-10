@@ -26,6 +26,7 @@ describe('Get authenticated user', function () {
                 'name'     => 'John Doe',
                 'email'    => 'john@doe.com',
                 'username' => 'jhondoe456',
+                'picture'  => null,
             ],
         ]);
         $response->assertJsonStructure([
@@ -34,6 +35,7 @@ describe('Get authenticated user', function () {
                 'name',
                 'email',
                 'username',
+                'picture',
                 'created_at',
                 'updated_at',
             ],
