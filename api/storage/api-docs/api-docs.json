@@ -425,6 +425,43 @@
                     }
                 }
             }
+        },
+        "/user/update-email/send-verification-link": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Send a verification link to the user's email",
+                "description": "This endpoint sends an email verification link. The user must be logged in.",
+                "operationId": "sendVerificationLink",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SendVerificationLinkSuccessResponseVirtual"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UnauthenticatedResponseVirtual"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
         }
     },
     "components": {
@@ -1311,6 +1348,23 @@
                     }
                 },
                 "type": "object"
+            },
+            "SendVerificationLinkRequestVirtual": {
+                "title": "Send Verification Link Request",
+                "description": "Request payload for sending email verification link",
+                "type": "object"
+            },
+            "SendVerificationLinkSuccessResponseVirtual": {
+                "title": "Send Verification Link Success Response",
+                "description": "Successful response when the verification email is sent",
+                "properties": {
+                    "message": {
+                        "title": "Message",
+                        "type": "string",
+                        "example": "Email sent successfully. Check your inbox for further explanation."
+                    }
+                },
+                "type": "object"
             }
         }
     },
@@ -1318,6 +1372,10 @@
         {
             "name": "Authentication",
             "description": "Authentication"
+        },
+        {
+            "name": "User",
+            "description": "User"
         }
     ]
 }
