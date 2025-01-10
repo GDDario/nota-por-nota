@@ -1,0 +1,21 @@
+meta {
+  name: Confirm token
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{url}}/user/update-email/confirm-token
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{access_token}}
+}
+
+body:json {
+  {
+    "token": "FjTLhU6ywmaCgfiuK8Mg3EPjaI7SyRmc0o9oUgm65YOpTYcXBYD7DyzSb41ACfqwiDrg4oCQOlnNF9ZJk9Fodi7EBOfCR2Z9VMiM"
+  }
+}

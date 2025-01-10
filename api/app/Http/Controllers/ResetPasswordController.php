@@ -18,6 +18,22 @@ use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class ResetPasswordController extends Controller
 {
+    public function sendEmail(
+        CheckEmailRequest             $request,
+        SendResetPasswordEmailUseCase $useCase
+    ): Response
+    {
+        $useCase->handle(
+            new SendResetPasswordEmailInputBoundary(
+                new Email($request->get('email'))
+            )
+        );
+
+        return new Response(
+            ['message' => 'If the email exists, we will send a verification link to you continue the reset process.'],
+            SymfonyResponse::HTTP_OK);
+    }
+
     public function confirmToken(
         ConfirmPasswordResetTokenRequest $request,
         ConfirmPasswordResetTokenUseCase $useCase
@@ -42,22 +58,6 @@ class ResetPasswordController extends Controller
                 'error' => 'Invalid or already used token.',
             ], SymfonyResponse::HTTP_BAD_REQUEST);
         }
-    }
-
-    public function sendEmail(
-        CheckEmailRequest             $request,
-        SendResetPasswordEmailUseCase $useCase
-    ): Response
-    {
-        $useCase->handle(
-            new SendResetPasswordEmailInputBoundary(
-                new Email($request->get('email'))
-            )
-        );
-
-        return new Response(
-            ['message' => 'If the email exists, we will send a verification link to you continue the reset process.'],
-            SymfonyResponse::HTTP_OK);
     }
 
     public function resetPassword(

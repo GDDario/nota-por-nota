@@ -27,6 +27,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::prefix('user')->group(function () {
         Route::prefix('update-email')->group(function () {
             Route::post('send-verification-link', [UpdateUserEmailController::class, 'sendVerificationLink']);
+            Route::post('confirm-token', [UpdateUserEmailController::class, 'confirmToken']);
         });
     });
 });
