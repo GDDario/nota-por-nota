@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\User;
 
+use App\Mail\NewEmailNotification;
 use App\Mail\UpdateUserEmailVerification;
 use App\Mail\UserEmailUpdatedNotification;
 use App\Models\EmailUpdateToken;
@@ -157,6 +158,7 @@ describe('Update user email', function () {
            $response->assertStatus(200);
            $response->assertJson(['message' => 'Email updated successfully!']);
            Mail::assertSent(UserEmailUpdatedNotification::class, 'john@doe.com');
+           Mail::assertSent(NewEmailNotification::class, 'john@doe.com');
            assertDatabaseCount('email_update_tokens', 0);
        });
     });
