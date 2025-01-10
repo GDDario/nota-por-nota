@@ -1,27 +1,26 @@
 <?php
 
-namespace Src\Application\UseCases\Authentication\ResetPassword;
+namespace Src\Application\UseCases\User\UpdateUserEmail;
 
 use App\Mail\PasswordHasBeenResetEmail;
-use Illuminate\Auth\Notifications\ResetPassword;
-use Illuminate\Support\Facades\Password;
-use InvalidArgumentException;
+use App\Mail\UserEmailUpdatedNotification;
 use Src\Application\Interfaces\EmailServiceInterface;
 use Src\Domain\Enums\GenericExpirableTokenStatusesEnum;
-use Src\Domain\Repositories\PasswordResetTokenRepositoryInterface;
+use Src\Domain\Repositories\EmailUpdateTokenRepositoryInterface;
 use Src\Domain\Repositories\UserRepositoryInterface;
 
-final readonly class ResetPasswordUseCase
+final readonly class UpdateUserEmailUseCase
 {
     public function __construct(
-        private PasswordResetTokenRepositoryInterface $tokenRepository,
-        private UserRepositoryInterface               $userRepository,
-        private EmailServiceInterface                 $emailService
-    ) {
+        private UserRepositoryInterface             $userRepository,
+        private EmailUpdateTokenRepositoryInterface $tokenRepository,
+        private EmailServiceInterface               $emailService
+    )
+    {
     }
 
     public function handle(
-        ResetPasswordInputBoundary $input
+        UpdateUserEmailInputBoundary $input
     ): UpdateUserEmailOutputBoundary
     {
         $token = $this->tokenRepository->findByToken($input->token);
@@ -32,10 +31,10 @@ final readonly class ResetPasswordUseCase
             } else {
                 $this->tokenRepository->deleteByToken($input->token);
 
-                $user = $this->userRepository->updatePassword($token->email, $input->password);
+                $user = $this->userRepository->updateEmail($token->email, $input->email);
 
                 $tokenStatus = GenericExpirableTokenStatusesEnum::CONFIRMED;
-                $mailable = new PasswordHasBeenResetEmail($user->name);
+                $mailable = new UserEmailUpdatedNotification($user->name);
                 $this->emailService->sendMailable($token->email, $mailable);
             }
         } else {

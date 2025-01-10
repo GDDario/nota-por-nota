@@ -3,12 +3,14 @@
 namespace Tests\Feature\User;
 
 use App\Mail\UpdateUserEmailVerification;
+use App\Mail\UserEmailUpdatedNotification;
 use App\Models\EmailUpdateToken;
 use App\Models\User;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\assertDatabaseCount;
+use function Pest\Laravel\assertDatabaseMissing;
 use function Pest\Laravel\postJson;
 
 const UPDATE_USER_EMAIL_BASE_URI = '/api/user/update-email';
@@ -133,5 +135,29 @@ describe('Update user email', function () {
                 ],
             ]);
         });
+    });
+
+    describe('Update email', function() {
+       it('should update the email successfully', function() {
+           Mail::fake();
+           $token = Str::random(100);
+           $user = createUser();
+           EmailUpdateToken::factory()->create([
+               'email' => 'john@doe.com',
+               'token' => $token,
+           ]);
+           $requestBody = [
+               'token' => $token,
+               'email' => 'new_john@doe.com',
+               'email_confirmation' => 'new_john@doe.com'
+           ];
+
+           $response = actingAs($user)->post(UPDATE_USER_EMAIL_BASE_URI, $requestBody);
+
+           $response->assertStatus(200);
+           $response->assertJson(['message' => 'Email updated successfully!']);
+           Mail::assertSent(UserEmailUpdatedNotification::class, 'john@doe.com');
+           assertDatabaseCount('email_update_tokens', 0);
+       });
     });
 });

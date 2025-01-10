@@ -54,6 +54,19 @@ final class UserEloquentRepository implements UserRepositoryInterface
         return $this->hydrateEntity($model);
     }
 
+    public function updateEmail(Email $oldEmail, Email $newEmail): ?User
+    {
+        if (!$model = $this->eloquentModel->query()->where('email', $oldEmail)->first()) {
+            return null;
+        }
+
+        $model->update([
+            'email' => $newEmail
+        ]);
+
+        return $this->hydrateEntity($model);
+    }
+
     private function hydrateEntity(?UserModel $model): ?User
     {
         if ($model === null) {
