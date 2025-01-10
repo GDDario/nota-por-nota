@@ -2,6 +2,7 @@
 
 namespace Src\Application\UseCases\User\UpdateUserEmail;
 
+use App\Mail\NewEmailNotification;
 use App\Mail\PasswordHasBeenResetEmail;
 use App\Mail\UserEmailUpdatedNotification;
 use Src\Application\Interfaces\EmailServiceInterface;
@@ -34,7 +35,10 @@ final readonly class UpdateUserEmailUseCase
                 $user = $this->userRepository->updateEmail($token->email, $input->email);
 
                 $tokenStatus = GenericExpirableTokenStatusesEnum::CONFIRMED;
-                $mailable = new UserEmailUpdatedNotification($user->name);
+                $mailable = new UserEmailUpdatedNotification($user->name, now()->format('Y-m-d h:i:s'));
+                $this->emailService->sendMailable($token->email, $mailable);
+
+                $mailable = new NewEmailNotification($user->name, now()->format('Y-m-d h:i:s'));
                 $this->emailService->sendMailable($token->email, $mailable);
             }
         } else {

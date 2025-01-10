@@ -8,7 +8,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class UserEmailUpdatedNotification extends Mailable
+class NewEmailNotification extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -28,7 +28,7 @@ class UserEmailUpdatedNotification extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Your email has been updated',
+            subject: 'This is your new email to your Nota por Nota app',
         );
     }
 
@@ -38,7 +38,7 @@ class UserEmailUpdatedNotification extends Mailable
     public function content(): Content
     {
         return new Content(
-            markdown: 'mail.user-email-updated-notification',
+            markdown: 'mail.new-email-notification',
         )->with([
             'userName' => $this->userName,
             'dateTime' => $this->dateTime
