@@ -12,6 +12,7 @@ use Illuminate\Support\Str;
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\assertDatabaseCount;
 use function Pest\Laravel\assertDatabaseMissing;
+use function Pest\Laravel\post;
 use function Pest\Laravel\postJson;
 
 const UPDATE_USER_EMAIL_BASE_URI = '/api/user/update-email';
@@ -25,7 +26,7 @@ function createUser(): User
 
 describe('Update user email', function () {
     describe('Verification link', function () {
-        it('should send the verification link in the user\' email and show a success message', function () {
+        it('should send the verification link in the user\'s email and show a success message', function () {
             Mail::fake();
             $user = createUser();
 
@@ -138,28 +139,223 @@ describe('Update user email', function () {
         });
     });
 
-    describe('Update email', function() {
-       it('should update the email successfully', function() {
-           Mail::fake();
-           $token = Str::random(100);
-           $user = createUser();
-           EmailUpdateToken::factory()->create([
-               'email' => 'john@doe.com',
-               'token' => $token,
-           ]);
-           $requestBody = [
-               'token' => $token,
-               'email' => 'new_john@doe.com',
-               'email_confirmation' => 'new_john@doe.com'
-           ];
+    describe('Update email', function () {
+        it('should update the email successfully', function () {
+            Mail::fake();
+            $token = Str::random(100);
+            $user = createUser();
+            EmailUpdateToken::factory()->create([
+                'email' => 'john@doe.com',
+                'token' => $token,
+            ]);
+            $requestBody = [
+                'token' => $token,
+                'email' => 'new_john@doe.com',
+                'email_confirmation' => 'new_john@doe.com'
+            ];
 
-           $response = actingAs($user)->post(UPDATE_USER_EMAIL_BASE_URI, $requestBody);
+            $response = actingAs($user)->post(UPDATE_USER_EMAIL_BASE_URI, $requestBody);
 
-           $response->assertStatus(200);
-           $response->assertJson(['message' => 'Email updated successfully!']);
-           Mail::assertSent(UserEmailUpdatedNotification::class, 'john@doe.com');
-           Mail::assertSent(NewEmailNotification::class, 'john@doe.com');
-           assertDatabaseCount('email_update_tokens', 0);
-       });
+            $response->assertStatus(200);
+            $response->assertJson(['message' => 'Email updated successfully!']);
+            Mail::assertSent(UserEmailUpdatedNotification::class, 'john@doe.com');
+            Mail::assertSent(NewEmailNotification::class, 'john@doe.com');
+            assertDatabaseCount('email_update_tokens', 0);
+        });
+
+        it('should not update the email if not authenticated', function () {
+            Mail::fake();
+            $token = Str::random(100);
+            EmailUpdateToken::factory()->create([
+                'email' => 'john@doe.com',
+                'token' => $token,
+            ]);
+            $user = createUser();
+            $requestBody = [
+                'token' => 'Invalid token',
+                'email' => 'new_john@doe.com',
+                'email_confirmation' => 'new_john@doe.com'
+            ];
+
+            $response = postJson(UPDATE_USER_EMAIL_BASE_URI, $requestBody);
+
+            $response->assertStatus(401);
+            $response->assertJson([
+                'message' => 'Unauthenticated.'
+            ]);
+            assertDatabaseCount('email_update_tokens', 1);
+            Mail::assertNotSent(UserEmailUpdatedNotification::class, 'john@doe.com');
+            Mail::assertNotSent(NewEmailNotification::class, 'john@doe.com');
+        });
+
+        it('should not update the email case the token is invalid', function () {
+            Mail::fake();
+            $token = Str::random(100);
+            EmailUpdateToken::factory()->create([
+                'email' => 'john@doe.com',
+                'token' => $token,
+            ]);
+            $user = createUser();
+            $requestBody = [
+                'token' => 'Invalid token',
+                'email' => 'new_john@doe.com',
+                'email_confirmation' => 'new_john@doe.com'
+            ];
+
+            $response = actingAs($user)->postJson(UPDATE_USER_EMAIL_BASE_URI, $requestBody);
+
+            $response->assertStatus(400);
+            $response->assertJson([
+                'message' => 'Invalid token provided.',
+                'error' => 'Invalid or already used token.'
+            ]);
+            assertDatabaseCount('email_update_tokens', 1);
+            Mail::assertNotSent(UserEmailUpdatedNotification::class, 'john@doe.com');
+            Mail::assertNotSent(NewEmailNotification::class, 'john@doe.com');
+        });
+
+        it('should not update the email case the token has already expired', function () {
+            Mail::fake();
+            $token = Str::random(100);
+            EmailUpdateToken::factory()->create([
+                'email' => 'john@doe.com',
+                'token' => $token,
+                'expires_at' => now()->subMinute()
+            ]);
+            $user = createUser();
+            $requestBody = [
+                'token' => $token,
+                'email' => 'new_john@doe.com',
+                'email_confirmation' => 'new_john@doe.com'
+            ];
+
+            $response = actingAs($user)->post(UPDATE_USER_EMAIL_BASE_URI, $requestBody);
+
+            $response->assertStatus(400);
+            $response->assertJson([
+                'message' => 'Invalid token provided.',
+                'error' => 'Token already expired.'
+            ]);
+            assertDatabaseCount('email_update_tokens', 1);
+            Mail::assertNotSent(UserEmailUpdatedNotification::class, 'john@doe.com');
+            Mail::assertNotSent(NewEmailNotification::class, 'john@doe.com');
+        });
+
+        it('should not update the email case the token field is not provided', function () {
+            Mail::fake();
+            $token = Str::random(100);
+            EmailUpdateToken::factory()->create([
+                'email' => 'john@doe.com',
+                'token' => $token
+            ]);
+            $user = createUser();
+            $requestBody = [
+                'email' => 'new_john@doe.com',
+                'email_confirmation' => 'new_john@doe.com'
+            ];
+            $response = actingAs($user)->postJson(UPDATE_USER_EMAIL_BASE_URI, $requestBody);
+
+            $response->assertStatus(422);
+            $response->assertJson([
+                'message' => 'The token field is required.',
+                'errors' => [
+                    'token' => [
+                        'The token field is required.',
+                    ],
+                ],
+            ]);
+            assertDatabaseCount('email_update_tokens', 1);
+            Mail::assertNotSent(UserEmailUpdatedNotification::class, 'john@doe.com');
+            Mail::assertNotSent(NewEmailNotification::class, 'john@doe.com');
+        });
+
+        it('should not update the email case the email field is not provided', function () {
+            Mail::fake();
+            $token = Str::random(100);
+            EmailUpdateToken::factory()->create([
+                'email' => 'john@doe.com',
+                'token' => $token
+            ]);
+            $user = createUser();
+            $requestBody = [
+                'token' => $token,
+                'email_confirmation' => 'new_john@doe.com'
+            ];
+
+            $response = actingAs($user)->postJson(UPDATE_USER_EMAIL_BASE_URI, $requestBody);
+
+            $response->assertStatus(422);
+            $response->assertJson([
+                'message' => 'The email field is required.',
+                'errors' => [
+                    'email' => [
+                        'The email field is required.',
+                    ],
+                ],
+            ]);
+            assertDatabaseCount('email_update_tokens', 1);
+            Mail::assertNotSent(UserEmailUpdatedNotification::class, 'john@doe.com');
+            Mail::assertNotSent(NewEmailNotification::class, 'john@doe.com');
+        });
+
+        it('should not update the email case the emails do not match', function () {
+            Mail::fake();
+            $token = Str::random(100);
+            EmailUpdateToken::factory()->create([
+                'email' => 'john@doe.com',
+                'token' => $token
+            ]);
+            $user = createUser();
+            $requestBody = [
+                'token' => $token,
+                'email' => 'new_john@doe.com',
+                'email_confirmation' => 'wrong@match.com'
+            ];
+
+            $response = actingAs($user)->postJson(UPDATE_USER_EMAIL_BASE_URI, $requestBody);
+
+            $response->assertStatus(422);
+            $response->assertJson([
+                'message' => 'The email field confirmation does not match.',
+                'errors' => [
+                    'email' => [
+                        'The email field confirmation does not match.',
+                    ],
+                ],
+            ]);
+            assertDatabaseCount('email_update_tokens', 1);
+            Mail::assertNotSent(UserEmailUpdatedNotification::class, 'john@doe.com');
+            Mail::assertNotSent(NewEmailNotification::class, 'john@doe.com');
+        });
+
+        it('should not update the email if the email field is not a valid email', function () {
+            Mail::fake();
+            $token = Str::random(100);
+            EmailUpdateToken::factory()->create([
+                'email' => 'john@doe.com',
+                'token' => $token
+            ]);
+            $user = createUser();
+            $requestBody = [
+                'token' => $token,
+                'email' => 'Buggy email',
+                'email_confirmation' => 'Buggy email'
+            ];
+
+            $response = actingAs($user)->postJson(UPDATE_USER_EMAIL_BASE_URI, $requestBody);
+
+            $response->assertStatus(422);
+            $response->assertJson([
+                'message' => 'The email field must be a valid email address.',
+                'errors' => [
+                    'email' => [
+                        'The email field must be a valid email address.',
+                    ],
+                ],
+            ]);
+            assertDatabaseCount('email_update_tokens', 1);
+            Mail::assertNotSent(UserEmailUpdatedNotification::class, 'john@doe.com');
+            Mail::assertNotSent(NewEmailNotification::class, 'john@doe.com');
+        });
     });
 });
