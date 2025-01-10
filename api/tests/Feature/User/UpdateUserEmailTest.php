@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\assertDatabaseCount;
-use function Pest\Laravel\post;
 use function Pest\Laravel\postJson;
 
 const UPDATE_USER_EMAIL_BASE_URI = '/api/user/update-email';
@@ -37,7 +36,7 @@ describe('Update user email', function () {
             assertDatabaseCount('email_update_tokens', 1);
         });
 
-        it('should not send the verification link case the user is not logged do not exist', function () {
+        it('should not send the verification link if there is no user logged', function () {
             Mail::fake();
 
             $response = postJson(UPDATE_USER_EMAIL_BASE_URI . '/send-verification-link');
@@ -55,10 +54,84 @@ describe('Update user email', function () {
             $user = createUser();
             $requestData = ['token' => $token];
 
-           $response = actingAs($user)->postJson(UPDATE_USER_EMAIL_BASE_URI . '/confirm-token', $requestData);
+            $response = actingAs($user)->postJson(UPDATE_USER_EMAIL_BASE_URI . '/confirm-token', $requestData);
 
-           $response->assertStatus(200);
-           $response->assertJson(['message' => 'Token confirmed successfully.']);
+            $response->assertStatus(200);
+            $response->assertJson(['message' => 'Token confirmed successfully.']);
+        });
+
+        it('should not confirm the token if the user is not authenticated', function () {
+            $token = Str::random(100);
+            EmailUpdateToken::factory()->create(['email' => 'john@doe.com', 'token' => $token]);
+            $requestData = ['token' => $token];
+
+            $response = postJson(UPDATE_USER_EMAIL_BASE_URI . '/confirm-token', $requestData);
+
+            $response->assertStatus(401);
+            $response->assertJson(['message' => 'Unauthenticated.']);
+        });
+
+        it('should not confirm if the token is invalid and show an error message', function () {
+            $token = Str::random(100);
+            $user = createUser();
+            EmailUpdateToken::factory()->create([
+                'email' => 'john@doe.com',
+                'token' => $token,
+            ]);
+            $requestBody = [
+                'token' => 'Invalid token',
+            ];
+
+            $request = actingAs($user)->postJson(UPDATE_USER_EMAIL_BASE_URI . '/confirm-token', $requestBody);
+
+            $request->assertStatus(400);
+            $request->assertJson([
+                'message' => 'Invalid token provided.',
+                'error' => 'Invalid or already used token.',
+            ]);
+        });
+
+        it('should not confirm if the token is already expired and show an error message', function () {
+            $token = Str::random(100);
+            $user = createUser();
+            EmailUpdateToken::factory()->create([
+                'email' => 'john@doe.com',
+                'token' => $token,
+                'expires_at' => now(),
+            ]);
+            $requestBody = [
+                'token' => $token,
+            ];
+
+            $request = actingAs($user)->post(UPDATE_USER_EMAIL_BASE_URI . '/confirm-token', $requestBody);
+
+            $request->assertStatus(400);
+            $request->assertJson([
+                'message' => 'Invalid token provided.',
+                'error' => 'Token already expired.',
+            ]);
+        });
+
+        it('should not confirm if the token is not provided and show an error message', function () {
+            $token = Str::random(100);
+            $user = createUser();
+            EmailUpdateToken::factory()->create([
+                'email' => 'john@doe.com',
+                'token' => $token,
+            ]);
+            $requestBody = [];
+
+            $response = actingAs($user)->postJson(UPDATE_USER_EMAIL_BASE_URI . '/confirm-token', $requestBody);
+
+            $response->assertStatus(422);
+            $response->assertJson([
+                'message' => 'The token field is required.',
+                'errors' => [
+                    'token' => [
+                        'The token field is required.',
+                    ],
+                ],
+            ]);
         });
     });
 });
