@@ -16,7 +16,7 @@ Route::post('refresh-token', RefreshTokenController::class);
 Route::prefix('reset-password')->group(function () {
     Route::post('send-email', [ResetPasswordController::class, 'sendEmail']);
     Route::post('confirm-token', [ResetPasswordController::class, 'confirmToken']);
-    Route::post('', [ResetPasswordController::class, 'resetPassword']);
+    Route::put('', [ResetPasswordController::class, 'resetPassword']);
 });
 
 Route::middleware(['auth:sanctum'])->group(function () {
@@ -28,7 +28,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::prefix('update-email')->group(function () {
             Route::post('send-verification-link', [UpdateUserEmailController::class, 'sendVerificationLink']);
             Route::post('confirm-token', [UpdateUserEmailController::class, 'confirmToken']);
-            Route::post('', [UpdateUserEmailController::class, 'updateEmail']);
+            Route::put('', [UpdateUserEmailController::class, 'updateEmail']);
         });
     });
 });

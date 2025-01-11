@@ -14,6 +14,7 @@ use function Pest\Laravel\assertDatabaseCount;
 use function Pest\Laravel\assertDatabaseMissing;
 use function Pest\Laravel\post;
 use function Pest\Laravel\postJson;
+use function Pest\Laravel\putJson;
 
 const UPDATE_USER_EMAIL_BASE_URI = '/api/user/update-email';
 
@@ -154,7 +155,7 @@ describe('Update user email', function () {
                 'email_confirmation' => 'new_john@doe.com'
             ];
 
-            $response = actingAs($user)->post(UPDATE_USER_EMAIL_BASE_URI, $requestBody);
+            $response = actingAs($user)->put(UPDATE_USER_EMAIL_BASE_URI, $requestBody);
 
             $response->assertStatus(200);
             $response->assertJson(['message' => 'Email updated successfully!']);
@@ -170,14 +171,13 @@ describe('Update user email', function () {
                 'email' => 'john@doe.com',
                 'token' => $token,
             ]);
-            $user = createUser();
             $requestBody = [
                 'token' => 'Invalid token',
                 'email' => 'new_john@doe.com',
                 'email_confirmation' => 'new_john@doe.com'
             ];
 
-            $response = postJson(UPDATE_USER_EMAIL_BASE_URI, $requestBody);
+            $response = putJson(UPDATE_USER_EMAIL_BASE_URI, $requestBody);
 
             $response->assertStatus(401);
             $response->assertJson([
@@ -202,7 +202,7 @@ describe('Update user email', function () {
                 'email_confirmation' => 'new_john@doe.com'
             ];
 
-            $response = actingAs($user)->postJson(UPDATE_USER_EMAIL_BASE_URI, $requestBody);
+            $response = actingAs($user)->putJson(UPDATE_USER_EMAIL_BASE_URI, $requestBody);
 
             $response->assertStatus(400);
             $response->assertJson([
@@ -229,7 +229,7 @@ describe('Update user email', function () {
                 'email_confirmation' => 'new_john@doe.com'
             ];
 
-            $response = actingAs($user)->post(UPDATE_USER_EMAIL_BASE_URI, $requestBody);
+            $response = actingAs($user)->put(UPDATE_USER_EMAIL_BASE_URI, $requestBody);
 
             $response->assertStatus(400);
             $response->assertJson([
@@ -253,7 +253,7 @@ describe('Update user email', function () {
                 'email' => 'new_john@doe.com',
                 'email_confirmation' => 'new_john@doe.com'
             ];
-            $response = actingAs($user)->postJson(UPDATE_USER_EMAIL_BASE_URI, $requestBody);
+            $response = actingAs($user)->putJson(UPDATE_USER_EMAIL_BASE_URI, $requestBody);
 
             $response->assertStatus(422);
             $response->assertJson([
@@ -282,7 +282,7 @@ describe('Update user email', function () {
                 'email_confirmation' => 'new_john@doe.com'
             ];
 
-            $response = actingAs($user)->postJson(UPDATE_USER_EMAIL_BASE_URI, $requestBody);
+            $response = actingAs($user)->putJson(UPDATE_USER_EMAIL_BASE_URI, $requestBody);
 
             $response->assertStatus(422);
             $response->assertJson([
@@ -312,7 +312,7 @@ describe('Update user email', function () {
                 'email_confirmation' => 'wrong@match.com'
             ];
 
-            $response = actingAs($user)->postJson(UPDATE_USER_EMAIL_BASE_URI, $requestBody);
+            $response = actingAs($user)->putJson(UPDATE_USER_EMAIL_BASE_URI, $requestBody);
 
             $response->assertStatus(422);
             $response->assertJson([
@@ -342,7 +342,7 @@ describe('Update user email', function () {
                 'email_confirmation' => 'Buggy email'
             ];
 
-            $response = actingAs($user)->postJson(UPDATE_USER_EMAIL_BASE_URI, $requestBody);
+            $response = actingAs($user)->putJson(UPDATE_USER_EMAIL_BASE_URI, $requestBody);
 
             $response->assertStatus(422);
             $response->assertJson([

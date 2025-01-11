@@ -6,7 +6,7 @@ use App\Models\{PasswordResetToken, User};
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
-use function Pest\Laravel\{assertDatabaseCount, post, postJson};
+use function Pest\Laravel\{assertDatabaseCount, post, postJson, put, putJson};
 
 const RESET_PASSWORD_BASE_URI = '/api/reset-password';
 
@@ -179,7 +179,7 @@ describe('Reset password', function () {
                 'password_confirmation' => 'password'
             ];
 
-            $response = post(RESET_PASSWORD_BASE_URI, $requestBody);
+            $response = put(RESET_PASSWORD_BASE_URI, $requestBody);
 
             $response->assertStatus(200);
             $response->assertJson(['message' => 'Password reset successfully!']);
@@ -200,7 +200,7 @@ describe('Reset password', function () {
                 'password_confirmation' => 'password'
             ];
 
-            $response = post(RESET_PASSWORD_BASE_URI, $requestBody);
+            $response = put(RESET_PASSWORD_BASE_URI, $requestBody);
 
             $response->assertStatus(400);
             $response->assertJson([
@@ -225,7 +225,7 @@ describe('Reset password', function () {
                 'password_confirmation' => 'password'
             ];
 
-            $response = post(RESET_PASSWORD_BASE_URI, $requestBody);
+            $response = put(RESET_PASSWORD_BASE_URI, $requestBody);
 
             $response->assertStatus(400);
             $response->assertJson([
@@ -248,7 +248,7 @@ describe('Reset password', function () {
                 'password_confirmation' => 'password'
             ];
 
-            $response = postJson(RESET_PASSWORD_BASE_URI, $requestBody);
+            $response = putJson(RESET_PASSWORD_BASE_URI, $requestBody);
 
             $response->assertStatus(422);
             $response->assertJson([
@@ -275,7 +275,7 @@ describe('Reset password', function () {
                 'password_confirmation' => 'password'
             ];
 
-            $response = postJson(RESET_PASSWORD_BASE_URI, $requestBody);
+            $response = putJson(RESET_PASSWORD_BASE_URI, $requestBody);
 
             $response->assertStatus(422);
             $response->assertJson([
@@ -303,7 +303,7 @@ describe('Reset password', function () {
                 'password_confirmation' => 'wrong match'
             ];
 
-            $response = postJson(RESET_PASSWORD_BASE_URI, $requestBody);
+            $response = putJson(RESET_PASSWORD_BASE_URI, $requestBody);
 
             $response->assertStatus(422);
             $response->assertJson([

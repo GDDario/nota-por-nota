@@ -4,27 +4,22 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class UserController extends Controller
 {
-    public function index()
-    {
-    }
+    public function updatePicture(
+        UpdateUserPictureRequest $request,
+        UpdateUserPictureUseCase $useCase
+    ) {
+        $result = $useCase->handle(
+            new UpdateUserPictureInputBoundary(
+                $request->file('picture'),
+                $request->file('picture_original'),
+            )
+        );
 
-    public function store()
-    {
-    }
-
-    public function show(User $user)
-    {
-        ds($user);
-    }
-
-    public function update(Request $request, User $user)
-    {
-    }
-
-    public function destroy(User $user)
-    {
+        return new Response(['message' => 'Picture updated successfully!'], SymfonyResponse::HTTP_OK);
     }
 }
