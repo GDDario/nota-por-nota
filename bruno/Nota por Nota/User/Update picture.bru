@@ -1,0 +1,24 @@
+meta {
+  name: Update picture
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{url}}/user/update-picture
+  body: multipartForm
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{access_token}}
+}
+
+body:form-urlencoded {
+  : 
+}
+
+body:multipart-form {
+  picture: @file(/home/gadondario/Downloads/JavaScript-logo.png)
+  original_picture: @file(/home/gadondario/Downloads/JavaScript-logo.png)
+}
