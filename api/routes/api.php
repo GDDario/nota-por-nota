@@ -6,7 +6,8 @@ use App\Http\Controllers\{AuthenticatedUserController,
     RefreshTokenController,
     RegisterController,
     ResetPasswordController,
-    UpdateUserEmailController};
+    UpdateUserEmailController,
+    UserController};
 use Illuminate\Support\Facades\Route;
 
 Route::post('register', RegisterController::class);
@@ -20,11 +21,12 @@ Route::prefix('reset-password')->group(function () {
 });
 
 Route::middleware(['auth:sanctum'])->group(function () {
+    Route::get('auth-user', AuthenticatedUserController::class);
     Route::post('logout', LogoutController::class);
 
-    Route::get('auth-user', AuthenticatedUserController::class);
-
     Route::prefix('user')->group(function () {
+        Route::post('update-picture', [UserController::class, 'updatePicture']);
+
         Route::prefix('update-email')->group(function () {
             Route::post('send-verification-link', [UpdateUserEmailController::class, 'sendVerificationLink']);
             Route::post('confirm-token', [UpdateUserEmailController::class, 'confirmToken']);

@@ -12,4 +12,5 @@ interface UserRepositoryInterface
     public function create(CreateUserDTO $dto): User;
     public function updatePassword(Email $email, string $password): ?User;
     public function updateEmail(Email $oldEmail, Email $newEmail): ?User;
+    public function updatePicture(Email $email, string $picture, string $originalPicture): ?User;
 }

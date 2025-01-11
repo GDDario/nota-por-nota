@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UpdateUserPictureRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Src\Application\UseCases\User\UpdateUserPicture\UpdateUserPictureInputBoundary;
+use Src\Application\UseCases\User\UpdateUserPicture\UpdateUserPictureUseCase;
+use Src\Domain\ValueObjects\Email;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class UserController extends Controller
@@ -13,10 +17,13 @@ class UserController extends Controller
         UpdateUserPictureRequest $request,
         UpdateUserPictureUseCase $useCase
     ) {
-        $result = $useCase->handle(
+        $email = new Email($request->user()->email);
+
+        $useCase->handle(
             new UpdateUserPictureInputBoundary(
+                $email,
                 $request->file('picture'),
-                $request->file('picture_original'),
+                $request->file('original_picture'),
             )
         );
 
