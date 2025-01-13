@@ -3,23 +3,19 @@ services:
         build:
             context: docker/php
         container_name: app-php
-        ports:
-            - "8000:8000"
         volumes:
             - ./:/var/www/html/nota-por-nota
         networks:
             - nota-por-nota-network
 
-    postgresql:
-        image: postgres:17
-        container_name: app-postgresql
-        ports:
-            - "5432:5432"
+    nginx:
+        build:
+            context: docker/nginx
+        container_name: app-nginx
         volumes:
-            - ./data/postgres:/var/lib/postgresql/data
-        environment:
-            POSTGRES_PASSWORD: postgres
-            POSTGRES_USER: postgres
+            - ./:/var/www/html/nota-por-nota
+        ports:
+            - "8000:80"
         networks:
             - nota-por-nota-network
 
@@ -31,6 +27,20 @@ services:
         command: redis-server --save 20 1 --loglevel warning
     #        volumes:
     #            - cache:/dat
+
+    postgres:
+        container_name: app-postgres
+        image: postgres:17
+        ports:
+            - "5432:5432"
+        environment:
+            - POSTGRES_DB=nota-por-nota
+            - POSTGRES_USER=postgres
+            - POSTGRES_PASSWORD=postgres
+        volumes:
+            - ./.postgres:/var/lib/postgres/data
+        networks:
+            - nota-por-nota-network
 
     mailpit:
         image: axllent/mailpit

@@ -12,5 +12,5 @@
 
 1. No Android Studio, clicar em "main.dart";
 2. Clicar em *edit configuration*;
-3. No campo *additional run args*, adicionar o valor `--dart-define-from-file=.env`.
+3. No campo *additional run args*, adicionar o valor `--dart-define-from-file =.env`.
 4. Mais especificações [nesse artigo da Medium](https://medium.com/@nayanbabariya/set-up-environment-variables-in-flutter-for-secure-and-scalable-apps-7409ae0c383e).
