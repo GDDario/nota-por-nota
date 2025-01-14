@@ -3,7 +3,7 @@
 namespace App\Virtual\ResetPassword\Endpoints;
 
 /**
- * @OA\Post(
+ * @OA\Put(
  *     path="reset-password",
  *     operationId="resetPassword",
  *     tags={"Authentication"},

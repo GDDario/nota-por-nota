@@ -3,7 +3,7 @@
 namespace App\Virtual\User\Endpoints;
 
 /**
- * @OA\Post(
+ * @OA\Put(
  *      path="user/update-email",
  *      operationId="updateEmail",
  *      tags={"User"},
