@@ -25,6 +25,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('logout', LogoutController::class);
 
     Route::prefix('user')->group(function () {
+        Route::put('', [UserController::class, 'update']);
         Route::post('update-picture', [UserController::class, 'updatePicture']);
 
         Route::prefix('update-email')->group(function () {
