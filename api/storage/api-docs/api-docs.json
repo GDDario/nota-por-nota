@@ -318,7 +318,7 @@
             }
         },
         "reset-password": {
-            "post": {
+            "put": {
                 "tags": [
                     "Authentication"
                 ],
@@ -522,8 +522,65 @@
                 ]
             }
         },
+        "/user": {
+            "put": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Update User Details",
+                "description": "Updates the user's name or username. The user must be authenticated.",
+                "operationId": "updateUser",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateUserRequestVirtual"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User updated successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UpdateUserSuccessResponseVirtual"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation errors",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UpdateUserValidationErrorResponseVirtual"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UnauthenticatedResponseVirtual"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "user/update-email": {
-            "post": {
+            "put": {
                 "tags": [
                     "User"
                 ],
@@ -1527,6 +1584,29 @@
                 },
                 "type": "object"
             },
+            "UpdateUserRequestVirtual": {
+                "title": "UpdateUserRequest",
+                "description": "Request body for updating user details",
+                "required": [
+                    "name",
+                    "username"
+                ],
+                "properties": {
+                    "name": {
+                        "title": "Name",
+                        "description": "The updated name of the user",
+                        "type": "string",
+                        "example": "John Doe"
+                    },
+                    "username": {
+                        "title": "Username",
+                        "description": "The updated username of the user",
+                        "type": "string",
+                        "example": "Jhondoe"
+                    }
+                },
+                "type": "object"
+            },
             "ConfirmEmailTokenSuccessResponseVirtual": {
                 "title": "Confirm Email Token Success Response",
                 "description": "Response after successfully confirming the email token",
@@ -1626,6 +1706,90 @@
                         "description": "Success message",
                         "type": "string",
                         "example": "Email updated successfully!"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateUserSuccessResponseVirtual": {
+                "title": "UpdateUserSuccessResponse",
+                "description": "Response for successful user update",
+                "properties": {
+                    "data": {
+                        "title": "Data",
+                        "description": "Response data",
+                        "properties": {
+                            "user": {
+                                "properties": {
+                                    "uuid": {
+                                        "type": "string",
+                                        "example": "4575a824-8014-3712-853a-8f8b32351610"
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "example": "John Doe"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "example": "john@doe.com"
+                                    },
+                                    "username": {
+                                        "type": "string",
+                                        "example": "Jhondoe"
+                                    },
+                                    "picture": {
+                                        "type": "string",
+                                        "example": "2025-01-13 22:53:44"
+                                    },
+                                    "created_at": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2025-01-14T01:37:36.000000Z"
+                                    },
+                                    "updated_at": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": null,
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateUserValidationErrorResponseVirtual": {
+                "title": "UpdateUserValidationErrorResponse",
+                "description": "Response for validation errors when updating user details",
+                "properties": {
+                    "message": {
+                        "title": "Message",
+                        "description": "Error message",
+                        "type": "string",
+                        "example": "The name field is required when username is not present. (and 1 more error)"
+                    },
+                    "errors": {
+                        "title": "Errors",
+                        "description": "Validation errors",
+                        "properties": {
+                            "name": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "example": "The name field is required when username is not present."
+                                }
+                            },
+                            "username": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "example": "The username field is required when name is not present."
+                                }
+                            }
+                        },
+                        "type": "object"
                     }
                 },
                 "type": "object"
